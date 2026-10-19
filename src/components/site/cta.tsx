@@ -1,0 +1,60 @@
+import Image from 'next/image'
+import { ArrowUpRight } from 'lucide-react'
+import { Reveal } from './reveal'
+import { CopyButton } from './copy-button'
+
+const ADOPTION_URL =
+  'https://github.com/d-o-hub/do-harness/blob/main/docs/adoption.md'
+
+export function Cta() {
+  return (
+    <section aria-labelledby="cta-heading" className="scroll-mt-24">
+      <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-12 px-5 py-20 md:px-8 md:py-28 lg:grid-cols-12 lg:gap-8">
+        <Reveal className="lg:col-span-7">
+          <h2
+            id="cta-heading"
+            className="max-w-[14ch] text-balance text-[clamp(2.25rem,4.5vw,3.5rem)] font-semibold leading-[1.08] tracking-[-0.025em]"
+          >
+            Run init. Read the verdict.
+          </h2>
+          <p className="mt-6 max-w-[52ch] text-pretty text-lg leading-relaxed text-muted-foreground">
+            One command scaffolds the workspace and reports GREEN, RED, or
+            VACUOUS on the spot.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <a
+              href={ADOPTION_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary"
+            >
+              Read the adoption guide
+              <ArrowUpRight
+                className="size-4"
+                strokeWidth={2}
+                aria-hidden="true"
+              />
+            </a>
+            <div className="cmd flex items-center gap-1 py-1.5 pl-3.5 pr-1.5">
+              <code className="whitespace-nowrap text-[13px] text-foreground">
+                npx do-harness init
+              </code>
+              <CopyButton command="npx do-harness init" />
+            </div>
+          </div>
+        </Reveal>
+
+        <Reveal delay={0.1} className="lg:col-span-5">
+          <Image
+            src="/harness-coil.png"
+            alt="Studio photograph of a coiled test lead with a green clip"
+            width={1344}
+            height={768}
+            sizes="(min-width: 1024px) 38vw, 100vw"
+            className="h-auto w-full rounded-xl border border-border [filter:saturate(0.88)]"
+          />
+        </Reveal>
+      </div>
+    </section>
+  )
+}

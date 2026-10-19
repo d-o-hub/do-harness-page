@@ -1,0 +1,220 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-signal: var(--signal);
+  --color-signal-ink: var(--signal-ink);
+  --color-signal-tint: var(--signal-tint);
+  --font-sans: var(--font-sg), "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jb), "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-swing: cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+/*
+  Theme: "instrument report".
+  Shape lock (documented): cards and images 12px (--radius), buttons 10px
+  (rounded-md), tags/chips full-pill. One accent (--signal green) locked across
+  the page; it is the product's own verdict color (GREEN), used semantically.
+  Z-index scale: nav 40 / overlay 50 / toast 60. No magic numbers elsewhere.
+*/
+:root {
+  --radius: 0.75rem;
+
+  --background: oklch(0.982 0.004 130);
+  --foreground: oklch(0.225 0.012 155);
+  --card: oklch(0.992 0.003 130);
+  --card-foreground: oklch(0.225 0.012 155);
+  --popover: oklch(0.992 0.003 130);
+  --popover-foreground: oklch(0.225 0.012 155);
+  --primary: oklch(0.225 0.012 155);
+  --primary-foreground: oklch(0.982 0.004 130);
+  --secondary: oklch(0.958 0.007 140);
+  --secondary-foreground: oklch(0.225 0.012 155);
+  --muted: oklch(0.958 0.007 140);
+  --muted-foreground: oklch(0.43 0.016 152);
+  --accent: oklch(0.958 0.007 140);
+  --accent-foreground: oklch(0.225 0.012 155);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.905 0.01 145);
+  --input: oklch(0.905 0.01 145);
+  --ring: oklch(0.53 0.115 152);
+
+  --signal: oklch(0.53 0.115 152);
+  --signal-ink: oklch(0.4 0.095 152);
+  --signal-tint: oklch(0.952 0.024 152);
+}
+
+.dark {
+  --background: oklch(0.168 0.01 155);
+  --foreground: oklch(0.936 0.008 140);
+  --card: oklch(0.205 0.011 155);
+  --card-foreground: oklch(0.936 0.008 140);
+  --popover: oklch(0.205 0.011 155);
+  --popover-foreground: oklch(0.936 0.008 140);
+  --primary: oklch(0.936 0.008 140);
+  --primary-foreground: oklch(0.168 0.01 155);
+  --secondary: oklch(0.245 0.012 155);
+  --secondary-foreground: oklch(0.936 0.008 140);
+  --muted: oklch(0.245 0.012 155);
+  --muted-foreground: oklch(0.72 0.014 150);
+  --accent: oklch(0.245 0.012 155);
+  --accent-foreground: oklch(0.936 0.008 140);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(0.3 0.012 152);
+  --input: oklch(0.3 0.012 152);
+  --ring: oklch(0.72 0.13 152);
+
+  --signal: oklch(0.72 0.13 152);
+  --signal-ink: oklch(0.79 0.11 152);
+  --signal-tint: oklch(0.26 0.032 152);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "ss01" on;
+  }
+  :focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--signal-tint);
+    color: var(--foreground);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer components {
+  /* Buttons: 44px touch targets, press feedback scale(0.97), no hover transform on touch. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 2.75rem;
+    padding: 0 1.25rem;
+    border-radius: calc(var(--radius) - 2px);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      transform 150ms var(--ease-out-strong),
+      background-color 150ms var(--ease-out-strong),
+      border-color 150ms var(--ease-out-strong),
+      color 150ms var(--ease-out-strong);
+  }
+  .btn:active {
+    transform: scale(0.97);
+  }
+  .btn-primary {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .btn-primary:hover {
+      background: color-mix(in oklab, var(--primary) 86%, var(--background));
+    }
+  }
+  .btn-secondary {
+    background: var(--background);
+    color: var(--foreground);
+    border: 1px solid var(--border);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .btn-secondary:hover {
+      background: var(--muted);
+      border-color: color-mix(in oklab, var(--foreground) 26%, var(--border));
+    }
+  }
+
+  /* Small square icon button (nav controls). */
+  .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.75rem;
+    width: 2.75rem;
+    border-radius: calc(var(--radius) - 2px);
+    color: var(--foreground);
+    cursor: pointer;
+    transition:
+      transform 150ms var(--ease-out-strong),
+      background-color 150ms var(--ease-out-strong);
+  }
+  .icon-btn:active {
+    transform: scale(0.97);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .icon-btn:hover {
+      background: var(--muted);
+    }
+  }
+
+  /* Pill tag: reserved for real enumerations (packs, frameworks). */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    height: 1.75rem;
+    padding: 0 0.75rem;
+    border-radius: 9999px;
+    border: 1px solid var(--border);
+    background: var(--background);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0;
+    color: var(--foreground);
+  }
+  .chip-tinted {
+    background: var(--signal-tint);
+    border-color: transparent;
+    color: var(--signal-ink);
+  }
+
+  /* Command row: real, copyable shell input, not a fake screenshot. */
+  .cmd {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    background: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: calc(var(--radius) - 4px);
+  }
+}
