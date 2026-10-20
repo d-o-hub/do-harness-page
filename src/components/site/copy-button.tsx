@@ -57,7 +57,7 @@ export function CopyButton({
     <button
       type="button"
       onClick={onCopy}
-      className="inline-flex h-11 shrink-0 items-center gap-1.5 rounded-md border border-transparent px-3 font-mono text-[13px] text-muted-foreground transition-colors duration-150 hover:text-foreground"
+      className="relative inline-flex h-11 shrink-0 items-center gap-1.5 rounded-md border border-transparent px-3 font-mono text-[13px] text-muted-foreground transition-colors duration-150 hover:text-foreground"
       aria-label={label}
     >
       {state === 'done' ? (

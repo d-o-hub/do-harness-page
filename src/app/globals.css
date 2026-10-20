@@ -217,4 +217,34 @@
     border: 1px solid var(--border);
     border-radius: calc(var(--radius) - 4px);
   }
+
+  /* Diagram connectors (how-it-works). Lines and arrowheads track both
+     themes via the tokens; labels mask the line with the section bg. */
+  .flow-line {
+    background: color-mix(in oklab, var(--muted-foreground) 34%, transparent);
+  }
+  .flow-arrow {
+    color: var(--muted-foreground);
+  }
+  .flow-label {
+    position: absolute;
+    background: var(--background);
+    padding: 0 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    line-height: 1.45;
+    letter-spacing: 0.01em;
+    text-align: center;
+    color: var(--muted-foreground);
+  }
+  /* The loop-back edge is the one signal-colored connector. */
+  .flow-signal .flow-line {
+    background: color-mix(in oklab, var(--signal) 60%, transparent);
+  }
+  .flow-signal .flow-arrow {
+    color: var(--signal);
+  }
+  .flow-signal .flow-label {
+    color: var(--signal-ink);
+  }
 }
