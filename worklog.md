@@ -52,3 +52,23 @@ Stage Summary:
 - Standalone shareable export: download/do-harness-how-it-works.png (light, 1440px).
 - Overflow fix landed in copy-button.tsx benefits every section with copyable commands.
 
+
+---
+Task ID: 3
+Agent: main (Z.ai)
+Task: Restore the animation + image-free work after a sandbox state rollback; add interactive stage pinning (recommendation 3).
+
+Work Log:
+- Found the project rolled back to the pre-animation state after the session recycle: the 3 editorial photos were back in public/, hero/bento/cta referenced them via next/image, the animation components were gone, and the worklog lost its later entries. This is why the user's preview showed images again.
+- Rebuilt globals.css additions: .flow-dot traveling-dot keyframes (x/x-rev/y/y-rev) + prefers-reduced-motion display:none guard, after the existing Task 2 connector classes (.flow-line/.flow-arrow/.flow-label/.flow-signal survived the rollback).
+- New shared hook src/components/site/use-loop-stage.ts: useInteractiveLoop(count) cycles stages every 2.2s and supports pinning - pin(stage) stops the advance, arms a 6s resume timer; the interval skips while pinned, and the cycle resumes from the pinned stage. Idle state -1 matches SSR (clean hydration); under prefers-reduced-motion the interval never starts but pinning still flips highlight colors (no motion).
+- New src/components/site/loop-panel.tsx (hero): live 2x2 architecture ring (01 guides, 02 agent, 03 sensors, 04 state) with traveling dot, spinning hub, and a caption line explaining the active stage. Nodes are real buttons: mouseenter/focus/click pins the stage; aria-pressed communicates state.
+- New src/components/site/sensor-cell.tsx (bento): 5-sensor suite on a 620ms tick machine, each sensor pulses then checks off, "exit 0 · GREEN" chip lands, cycle restarts; reduced motion folds reduce into the all-pass frame at render (no setState in effect).
+- New src/components/site/verdict-panel.tsx (cta): rotating dashed signal ring around a green check with "$ do-harness verify" and "exit 0 · GREEN"; static under reduced motion.
+- Rewrote how-it-works.tsx: trimmed text (2-sentence intro, 1-clause init strip, 1 term + 1 line per card), animated loop (active card highlight, signal edges, traveling dots, spinning hub), cycling EXPLAIN caption bound to the stage machine. Stage number badges are real buttons (click/focus pins); card mouseenter pins. Hub spin guarded with reduce so a pinned stage under reduced motion never spins.
+- hero.tsx / bento.tsx / cta.tsx: Image imports and photo markup replaced by LoopPanel / SensorCell / VerdictPanel. Deleted public/harness-hero.png, harness-macro.png, harness-coil.png.
+- Verified: lint clean; tsc clean for site sources. agent-browser at 1440/768/390, light + dark: document.images.length === 0 (page is fully image-free), scrollWidth equals viewport at all three widths, console + page errors clean. Pin behavior verified with real input: hero hover-pin on "Stage 02: agent" held its caption for 3s then resumed to the next stage after ~6s idle; how-it-works click-pin on the "Pin stage 02" badge did the same; screenshot captured the pinned state (card 02 tinted, green edge, traveling dot).
+
+Stage Summary:
+- The preview now shows only animations and explanations: zero <img> elements ship in the page. Hero = explorable loop ring, how-it-works = technical loop diagram with cycling explanations, bento = live sensor suite, cta = live verdict.
+- The loop is interactive per recommendation 3: hover, click, or keyboard-focus pins a stage and pauses the cycle; it resumes from the pinned stage after 6 seconds idle.

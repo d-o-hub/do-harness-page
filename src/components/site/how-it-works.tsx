@@ -1,17 +1,48 @@
+'use client'
+
 import { ArrowUp, ArrowUpRight, RotateCw } from 'lucide-react'
-import type { ReactNode } from 'react'
+import { motion } from 'framer-motion'
+import { type ReactNode } from 'react'
 import { Reveal } from './reveal'
+import { useInteractiveLoop } from './use-loop-stage'
+
+/* ----------------------------------------------------------------
+   The technical loop, animated and explorable. A shared state
+   machine cycles the stages; a traveling dot rides the active
+   edge; the caption line explains the active stage. Hovering a
+   card, or focusing/clicking its number badge, pins that stage
+   and pauses the cycle until the visitor goes idle.
+----------------------------------------------------------------- */
+
+const EXPLAIN = [
+  'feedforward: the agent loads one guide, not the whole corpus',
+  'execution: the agent edits; the harness records the trail',
+  'feedback: verify returns exit 0 GREEN or exit 1 RED',
+  'learning: repeated failures distill into new skills',
+]
+
+const IDLE_EXPLAIN = 'guides in, verdicts out; the loop lives in your repo'
 
 /* ----------------------------------------------------------------
    Diagram connectors. Pure CSS lines + SVG arrowheads so they
-   inherit both themes. Labels mask the line with the section
-   background, fieldset-legend style.
+   inherit both themes. An active edge reuses the .flow-signal
+   token styling and carries the traveling dot.
 ----------------------------------------------------------------- */
 
-function ArrowRight({ label }: { label: string }) {
+function ArrowRight({
+  label,
+  active = false,
+}: {
+  label: string
+  active?: boolean
+}) {
   return (
-    <div className="relative flex w-full items-center" aria-hidden="true">
+    <div
+      className={`relative flex w-full items-center ${active ? 'flow-signal' : ''}`}
+      aria-hidden="true"
+    >
       <div className="flow-line h-[2px] w-full rounded-full" />
+      {active && <span className="flow-dot flow-dot-x" />}
       <span className="flow-label left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
         {label}
       </span>
@@ -27,10 +58,20 @@ function ArrowRight({ label }: { label: string }) {
   )
 }
 
-function ArrowLeft({ label }: { label: string }) {
+function ArrowLeft({
+  label,
+  active = false,
+}: {
+  label: string
+  active?: boolean
+}) {
   return (
-    <div className="relative flex w-full items-center" aria-hidden="true">
+    <div
+      className={`relative flex w-full items-center ${active ? 'flow-signal' : ''}`}
+      aria-hidden="true"
+    >
       <div className="flow-line h-[2px] w-full rounded-full" />
+      {active && <span className="flow-dot flow-dot-x-rev" />}
       <span className="flow-label left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap">
         {label}
       </span>
@@ -48,17 +89,22 @@ function ArrowLeft({ label }: { label: string }) {
 
 function ArrowDown({
   label,
+  active = false,
   className = 'min-h-20',
 }: {
   label: string
+  active?: boolean
   className?: string
 }) {
   return (
     <div
-      className={`relative flex w-full flex-col items-center ${className}`}
+      className={`relative flex w-full flex-col items-center ${
+        active ? 'flow-signal' : ''
+      } ${className}`}
       aria-hidden="true"
     >
       <div className="flow-line w-[2px] flex-1 rounded-full" />
+      {active && <span className="flow-dot flow-dot-y" />}
       <span className="flow-label left-1/2 top-1/2 max-w-[9.5rem] -translate-x-1/2 -translate-y-1/2">
         {label}
       </span>
@@ -76,17 +122,19 @@ function ArrowDown({
 
 function FlowArrowUp({
   label,
-  signal = false,
+  alwaysSignal = false,
+  active = false,
   className = 'min-h-20',
 }: {
   label: string
-  signal?: boolean
+  alwaysSignal?: boolean
+  active?: boolean
   className?: string
 }) {
   return (
     <div
       className={`relative flex w-full flex-col items-center ${
-        signal ? 'flow-signal' : ''
+        alwaysSignal || active ? 'flow-signal' : ''
       } ${className}`}
       aria-hidden="true"
     >
@@ -99,6 +147,7 @@ function FlowArrowUp({
         <path d="M0 0 8 5 0 10Z" fill="currentColor" />
       </svg>
       <div className="flow-line w-[2px] flex-1 rounded-full" />
+      {active && <span className="flow-dot flow-dot-y-rev" />}
       <span className="flow-label left-1/2 top-1/2 max-w-[9.5rem] -translate-x-1/2 -translate-y-1/2">
         {label}
       </span>
@@ -107,46 +156,63 @@ function FlowArrowUp({
 }
 
 /* ----------------------------------------------------------------
-   Stage cards. Every fact below comes from the do-harness README:
-   commands, flags, exit codes, the 3-strike halt, the append-only
-   event log. No invented numbers.
+   Stage cards. One term, one line: the diagram and the caption
+   carry the explanation, the cards carry the artifacts. Every fact
+   comes from the do-harness README. The number badge is a real
+   button so keyboard users can pin a stage too.
 ----------------------------------------------------------------- */
-
-type Item = { term: string; text: ReactNode }
 
 function StageCard({
   n,
   kicker,
   title,
-  items,
+  term,
+  value,
   footer,
+  active = false,
+  onPin,
 }: {
   n: string
   kicker: string
   title: string
-  items: Item[]
+  term: string
+  value: ReactNode
   footer?: ReactNode
+  active?: boolean
+  onPin: () => void
 }) {
   return (
-    <div className="flex h-full flex-col rounded-xl border border-border bg-card p-6">
+    <div
+      onMouseEnter={onPin}
+      className={`flex h-full flex-col rounded-xl border bg-card p-6 transition-colors duration-500 ${
+        active ? 'border-signal/40 bg-signal-tint/20' : 'border-border'
+      }`}
+    >
       <div className="flex items-center gap-3">
-        <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-muted font-mono text-[11px] text-muted-foreground">
+        <button
+          type="button"
+          onClick={onPin}
+          onFocus={onPin}
+          aria-label={`Pin stage ${n}: ${title}`}
+          aria-pressed={active}
+          className={`flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-md font-mono text-[11px] transition-colors duration-500 ${
+            active ? 'bg-signal-tint text-signal-ink' : 'bg-muted text-muted-foreground'
+          }`}
+        >
           {n}
-        </span>
+        </button>
         <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
           {kicker}
         </span>
       </div>
       <h3 className="mt-4 text-[17px] font-semibold tracking-tight">{title}</h3>
-      <dl className="mt-4 flex-1 space-y-4">
-        {items.map((it) => (
-          <div key={it.term}>
-            <dt className="font-mono text-[13px] text-foreground">{it.term}</dt>
-            <dd className="mt-1 text-[13.5px] leading-relaxed text-muted-foreground">
-              {it.text}
-            </dd>
-          </div>
-        ))}
+      <dl className="mt-3 flex-1">
+        <dt className="font-mono text-[13px] leading-relaxed text-foreground">
+          {term}
+        </dt>
+        <dd className="mt-1.5 text-[13.5px] leading-relaxed text-muted-foreground">
+          {value}
+        </dd>
       </dl>
       {footer}
     </div>
@@ -171,6 +237,9 @@ const EXIT_CODES = (
 )
 
 export function HowItWorks() {
+  // 0..3 while animating; -1 when static (reduced motion, pre-mount).
+  const { stage, pin, reduce } = useInteractiveLoop(4)
+
   return (
     <section
       id="how"
@@ -185,11 +254,9 @@ export function HowItWorks() {
           >
             One contract, read in two directions.
           </h2>
-          <p className="mt-5 max-w-[60ch] text-pretty text-[17px] leading-relaxed text-muted-foreground">
+          <p className="mt-5 max-w-[56ch] text-pretty text-[17px] leading-relaxed text-muted-foreground">
             Feedforward guides shape what the agent writes. Feedback sensors
-            decide whether the result is done. Both live in your repo,
-            versioned with the code they govern. init wires the loop once;
-            every change after that travels the same circle.
+            decide whether the result is done.
           </p>
         </Reveal>
 
@@ -205,23 +272,15 @@ export function HowItWorks() {
               </span>
             </div>
             <p className="text-[13px] leading-relaxed text-muted-foreground">
-              Detects the language pack, writes{' '}
+              writes{' '}
               <span className="font-mono text-[12px] text-foreground">
                 AGENTS.md
               </span>
               ,{' '}
               <span className="font-mono text-[12px] text-foreground">
-                do-harness.toml
-              </span>
-              ,{' '}
-              <span className="font-mono text-[12px] text-foreground">
-                plans/invariants.json
-              </span>{' '}
-              and{' '}
-              <span className="font-mono text-[12px] text-foreground">
                 .agents/skills/
               </span>
-              , seeds the libSQL state, and reports the first verdict.
+              , the sensors, and the libSQL state.
             </p>
           </div>
 
@@ -233,24 +292,14 @@ export function HowItWorks() {
                 n="01"
                 kicker="before the code"
                 title="Feedforward"
-                items={[
-                  {
-                    term: 'AGENTS.md',
-                    text: 'The routing and completion contract, generated for the repo.',
-                  },
-                  {
-                    term: '.agents/skills/',
-                    text: 'Markdown guides with executable evals, versioned next to the code they govern.',
-                  },
-                  {
-                    term: 'skills suggest',
-                    text: 'Ranks skills by metadata so the agent loads exactly one body.',
-                  },
-                ]}
+                active={stage === 0}
+                onPin={() => pin(0)}
+                term="AGENTS.md + .agents/skills/"
+                value="The contract and the guides the agent reads before it codes."
               />
             </div>
             <div className="lg:hidden">
-              <ArrowDown label="agent loads the guide" />
+              <ArrowDown label="agent loads the guide" active={stage === 0} />
             </div>
 
             {/* 02 agent execution */}
@@ -259,24 +308,17 @@ export function HowItWorks() {
                 n="02"
                 kicker="during the change"
                 title="Agent execution"
-                items={[
-                  {
-                    term: 'task add / advance',
-                    text: 'Work enters the board as tasks with sensor-gated completion.',
-                  },
-                  {
-                    term: 'edit and run',
-                    text: 'The agent codes in the repo; the harness never drives the editor.',
-                  },
-                  {
-                    term: 'trace add',
-                    text: 'Each executed command and its resolution is recorded per session.',
-                  },
-                ]}
+                active={stage === 1}
+                onPin={() => pin(1)}
+                term="task add · task advance · trace add"
+                value="Sensor-gated tasks; every executed command is recorded."
               />
             </div>
             <div className="lg:hidden">
-              <ArrowDown label="every change must pass" />
+              <ArrowDown
+                label="every change must pass"
+                active={stage === 1}
+              />
             </div>
 
             {/* 03 feedback */}
@@ -285,22 +327,18 @@ export function HowItWorks() {
                 n="03"
                 kicker="after the code"
                 title="Feedback sensors"
-                items={[
-                  {
-                    term: 'do-harness verify',
-                    text: 'Runs the sensor suite the pack selects: fmt, clippy, test, typecheck, build.',
-                  },
-                  { term: 'exit codes', text: EXIT_CODES },
-                  {
-                    term: '--record',
-                    text: 'Every result becomes a beat; 3 consecutive failures halt a sensor.',
-                  },
-                ]}
+                active={stage === 2}
+                onPin={() => pin(2)}
+                term="do-harness verify"
+                value={EXIT_CODES}
                 footer={ENFORCED_AT}
               />
             </div>
             <div className="lg:hidden">
-              <ArrowDown label="results become evidence" />
+              <ArrowDown
+                label="results become evidence"
+                active={stage === 2}
+              />
             </div>
 
             {/* 04 state and learning */}
@@ -309,71 +347,94 @@ export function HowItWorks() {
                 n="04"
                 kicker="between runs"
                 title="State and learning"
-                items={[
-                  {
-                    term: 'agent_state.db',
-                    text: 'Tasks, the append-only workflow_events log, beats, and error signatures, in libSQL.',
-                  },
-                  {
-                    term: '--evidence',
-                    text: 'verify writes machine-readable proof that CI consumes in strict mode.',
-                  },
-                  {
-                    term: 'distill, learn --draft',
-                    text: 'Repeated failures become new skills, folded back into .agents/skills/.',
-                  },
-                ]}
+                active={stage === 3}
+                onPin={() => pin(3)}
+                term="agent_state.db"
+                value="Append-only events, beats, error signatures; failures distill into skills."
               />
             </div>
 
             {/* Mobile loop-back strip. */}
-            <div className="mt-4 flex items-center gap-3 rounded-xl border border-dashed border-signal/40 bg-signal-tint px-5 py-4 lg:hidden">
-              <ArrowUp className="size-4 shrink-0 text-signal" aria-hidden="true" />
+            <div
+              className={`mt-4 flex items-center gap-3 rounded-xl border border-dashed bg-signal-tint px-5 py-4 transition-colors duration-500 lg:hidden ${
+                stage === 3 ? 'border-signal/60' : 'border-signal/40'
+              }`}
+            >
+              <ArrowUp
+                className={`size-4 shrink-0 text-signal transition-opacity duration-500 ${
+                  stage === 3 ? 'opacity-100' : 'opacity-60'
+                }`}
+                aria-hidden="true"
+              />
               <p className="font-mono text-[12px] leading-relaxed text-signal-ink">
-                distilled skills fold back into .agents/skills/ · the loop
-                closes
+                skills fold back in · the loop closes
               </p>
             </div>
 
             {/* Desktop loop connectors. */}
             <div className="hidden lg:col-start-2 lg:row-start-1 lg:flex lg:items-center lg:px-1">
-              <ArrowRight label="agent loads the guide" />
+              <ArrowRight label="agent loads the guide" active={stage === 0} />
             </div>
             <div className="hidden lg:col-start-1 lg:row-start-2 lg:flex lg:py-3">
               <FlowArrowUp
-                signal
+                alwaysSignal
                 label="skills fold back in"
+                active={stage === 3}
                 className="min-h-28 flex-1"
               />
             </div>
             <div className="hidden lg:col-start-2 lg:row-start-2 lg:flex lg:items-center lg:justify-center">
               <div className="flex flex-col items-center gap-2">
-                <div className="flex size-14 items-center justify-center rounded-full border border-border bg-card">
+                <motion.div
+                  className="flex size-14 items-center justify-center rounded-full border border-border bg-card"
+                  animate={!reduce && stage >= 0 ? { rotate: 360 } : undefined}
+                  transition={
+                    !reduce && stage >= 0
+                      ? { repeat: Infinity, duration: 9, ease: 'linear' }
+                      : undefined
+                  }
+                >
                   <RotateCw className="size-5 text-signal" aria-hidden="true" />
-                </div>
+                </motion.div>
                 <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
                   the loop
                 </span>
               </div>
             </div>
             <div className="hidden lg:col-start-3 lg:row-start-2 lg:flex lg:py-3">
-              <ArrowDown label="every change must pass" className="min-h-28 flex-1" />
+              <ArrowDown
+                label="every change must pass"
+                active={stage === 1}
+                className="min-h-28 flex-1"
+              />
             </div>
             <div className="hidden lg:col-start-2 lg:row-start-3 lg:flex lg:items-center lg:px-1">
-              <ArrowLeft label="results become evidence" />
+              <ArrowLeft label="results become evidence" active={stage === 2} />
             </div>
           </div>
 
-          {/* Caption + docs link. */}
+          {/* Live caption + docs link. The caption explains the active stage. */}
           <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-              fig. 1 · the harness loop
-            </p>
+            <div className="flex min-h-5 items-center gap-2.5">
+              <span
+                className="size-1.5 shrink-0 animate-pulse rounded-full bg-signal motion-reduce:animate-none"
+                aria-hidden="true"
+              />
+              <motion.p
+                key={stage}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.35 }}
+                className="font-mono text-[12px] leading-snug text-muted-foreground"
+              >
+                {stage >= 0 ? EXPLAIN[stage] : IDLE_EXPLAIN}
+              </motion.p>
+            </div>
             <a
               href="https://github.com/d-o-hub/do-harness/blob/main/docs/adoption.md"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-[13px] font-medium text-foreground underline-offset-4 hover:underline"
+              className="inline-flex shrink-0 items-center gap-1.5 text-[13px] font-medium text-foreground underline-offset-4 hover:underline"
             >
               Per-ecosystem quickstarts in docs/adoption.md
               <ArrowUpRight className="size-3.5" aria-hidden="true" />

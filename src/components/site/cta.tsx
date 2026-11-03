@@ -1,7 +1,7 @@
-import Image from 'next/image'
 import { ArrowUpRight } from 'lucide-react'
 import { Reveal } from './reveal'
 import { CopyButton } from './copy-button'
+import { VerdictPanel } from './verdict-panel'
 
 const ADOPTION_URL =
   'https://github.com/d-o-hub/do-harness/blob/main/docs/adoption.md'
@@ -45,14 +45,7 @@ export function Cta() {
         </Reveal>
 
         <Reveal delay={0.1} className="lg:col-span-5">
-          <Image
-            src="/harness-coil.png"
-            alt="Studio photograph of a coiled test lead with a green clip"
-            width={1344}
-            height={768}
-            sizes="(min-width: 1024px) 38vw, 100vw"
-            className="h-auto w-full rounded-xl border border-border [filter:saturate(0.88)]"
-          />
+          <VerdictPanel />
         </Reveal>
       </div>
     </section>

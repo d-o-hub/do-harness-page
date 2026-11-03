@@ -1,5 +1,5 @@
-import Image from 'next/image'
 import { Reveal } from './reveal'
+import { SensorCell } from './sensor-cell'
 
 const CELLS = [
   {
@@ -108,15 +108,7 @@ export function Bento() {
 
         <div className="mt-14 grid grid-cols-1 gap-4 md:grid-cols-4">
           <Reveal className="md:col-span-1 md:row-span-2">
-            <div className="relative h-64 overflow-hidden rounded-xl border border-border md:h-full md:min-h-[21rem]">
-              <Image
-                src="/harness-macro.png"
-                alt="Macro photograph of machined connector terminals with a green cap"
-                fill
-                sizes="(min-width: 768px) 25vw, 100vw"
-                className="object-cover [filter:saturate(0.88)]"
-              />
-            </div>
+            <SensorCell />
           </Reveal>
 
           {CELLS.map((cell, i) => (

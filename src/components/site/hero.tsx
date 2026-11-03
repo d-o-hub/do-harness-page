@@ -1,8 +1,8 @@
 'use client'
 
-import Image from 'next/image'
 import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowRight, Github } from 'lucide-react'
+import { LoopPanel } from './loop-panel'
 
 const REPO_URL = 'https://github.com/d-o-hub/do-harness'
 
@@ -75,15 +75,7 @@ export function Hero() {
           animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
           transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1], delay: 0.15 }}
         >
-          <Image
-            src="/harness-hero.png"
-            alt="Studio photograph of a braided cable harness with a green-marked connector"
-            width={864}
-            height={1152}
-            priority
-            sizes="(min-width: 1024px) 38vw, 100vw"
-            className="h-auto w-full rounded-xl border border-border [filter:saturate(0.88)]"
-          />
+          <LoopPanel />
         </motion.div>
       </div>
     </section>
