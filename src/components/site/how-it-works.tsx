@@ -238,7 +238,7 @@ const EXIT_CODES = (
 
 export function HowItWorks() {
   // 0..3 while animating; -1 when static (reduced motion, pre-mount).
-  const { stage, pin, reduce } = useInteractiveLoop(4)
+  const { stage, pin, reduce, containerRef } = useInteractiveLoop(4)
 
   return (
     <section
@@ -246,7 +246,10 @@ export function HowItWorks() {
       aria-labelledby="how-heading"
       className="scroll-mt-24 border-t border-border"
     >
-      <div className="mx-auto max-w-[1200px] px-5 py-20 md:px-8 md:py-28">
+      <div
+        ref={containerRef}
+        className="mx-auto max-w-[1200px] px-5 py-20 md:px-8 md:py-28"
+      >
         <Reveal>
           <h2
             id="how-heading"

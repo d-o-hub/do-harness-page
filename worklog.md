@@ -72,3 +72,17 @@ Work Log:
 Stage Summary:
 - The preview now shows only animations and explanations: zero <img> elements ship in the page. Hero = explorable loop ring, how-it-works = technical loop diagram with cycling explanations, bento = live sensor suite, cta = live verdict.
 - The loop is interactive per recommendation 3: hover, click, or keyboard-focus pins a stage and pauses the cycle; it resumes from the pinned stage after 6 seconds idle.
+
+---
+Task ID: 4
+Agent: main (Z.ai)
+Task: Complete recommendation 1 (RED terminal in thesis) and recommendation 2 (visibility gating for every clock); permanently settle the "preview shows images" report.
+
+Work Log:
+- Image audit: grep of src/ found zero <Image>/<img>/next-image references; the only hit was scripts/page-render.html (an old dev-server HTML snapshot, not served). The three harness-*.png files were still sitting in public/ unreferenced; deleted them, so public/ now ships only logo.svg + robots.txt. Live DOM check at 1440 after a fresh load: 0 <img>, 0 svg <image>, 0 url() background images, and performance resource entries contain no png/jpg/webp/avif at all. Any remaining photos in the user's preview are browser cache; a hard refresh shows the animation-only page.
+- Recommendation 2: added useVisibilityGate() to use-loop-stage.ts. One `live` flag fed by an IntersectionObserver on the diagram root (callers attach the returned containerRef) plus a document visibilitychange listener. Intervals in useInteractiveLoop and SensorCell are torn down while `live` is false and re-armed on return, so nothing ticks offscreen or in a hidden tab. containerRef wired into LoopPanel root, HowItWorks container, SensorCell root.
+- Recommendation 1: new src/components/site/red-terminal.tsx, mounted in thesis.tsx as a full-width second grid row (prose left col-span-4, terminal right col-span-8). Scripted terminal replays the README failure loop: three `verify --record` runs failing on `test` (exit 1, strikes 1-3), the halt line, then the fixed run landing `exit 0 · GREEN`. Tones: cmd prompt muted, pass/fail marks signal-ink/destructive, strike counters muted, halt strip bg-destructive/10, GREEN strip bg-signal-tint. Timeout-chain driver gated by the same visibility hook; body height reserved at 312px (14 rows x 20px + padding) so the card never jumps; reduced motion renders the completed transcript statically; role="img" with a descriptive label, transcript aria-hidden (the prose carries the facts for AT). Fixed a duplicate-key bug (repeated command lines) by keying on index; shortened the halt line after the 390px check showed a wrap risk.
+- Verified: lint clean, tsc clean for site sources. agent-browser: terminal frozen at 1 line while below the fold, 10 lines 5s after scrolling into view, cycling past the full 13-line transcript; click-pin on a hero node held for 3s and resumed after ~6s idle; halt + GREEN strips screenshot-verified in light and dark; 14 transcript rows fit the reserved box at 390 (last row bottom 581 vs box bottom 597); zero console errors/warnings; zero horizontal overflow at 1440/768/390.
+
+Stage Summary:
+- The page is now provably image-free at the network level and every animated diagram pauses its clock when offscreen or when the tab is hidden (recommendation 2), the thesis section shows the RED loop as a live terminal (recommendation 1), and the explorable pin from recommendation 3 carries over.

@@ -3,6 +3,7 @@
 import { Check } from 'lucide-react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { useEffect, useState } from 'react'
+import { useVisibilityGate } from './use-loop-stage'
 
 /* ----------------------------------------------------------------
    Live sensor suite: the five sensors the packs select run in
@@ -22,18 +23,22 @@ const CYCLE = ALL_PASS_AT + HOLD_TICKS
 
 export function SensorCell() {
   const reduce = useReducedMotion()
+  const { containerRef, live } = useVisibilityGate()
   const [tick, setTick] = useState(0)
 
   useEffect(() => {
-    if (reduce) return
+    if (reduce || !live) return
     const id = setInterval(() => setTick((t) => (t + 1) % CYCLE), TICK_MS)
     return () => clearInterval(id)
-  }, [reduce])
+  }, [reduce, live])
 
   const allPass = Boolean(reduce) || tick >= ALL_PASS_AT
 
   return (
-    <div className="flex h-full flex-col rounded-xl border border-border bg-card p-5">
+    <div
+      ref={containerRef}
+      className="flex h-full flex-col rounded-xl border border-border bg-card p-5"
+    >
       <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
         verify · sensor suite
       </p>

@@ -138,11 +138,14 @@ function EdgeY({
 }
 
 export function LoopPanel() {
-  const { stage, pin, reduce } = useInteractiveLoop(4)
+  const { stage, pin, reduce, containerRef } = useInteractiveLoop(4)
   const caption = stage >= 0 ? CAPTIONS[stage] : IDLE_CAPTION
 
   return (
-    <div className="rounded-xl border border-border bg-card p-5 sm:p-6">
+    <div
+      ref={containerRef}
+      className="rounded-xl border border-border bg-card p-5 sm:p-6"
+    >
       {/* The ring: 01 guides -> 02 agent -> 03 sensors -> 04 state -> back. */}
       <div
         className="grid grid-cols-[minmax(0,1fr)_5.5rem_minmax(0,1fr)] items-stretch"
