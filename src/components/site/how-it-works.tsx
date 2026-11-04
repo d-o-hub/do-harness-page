@@ -4,6 +4,7 @@ import { ArrowUp, ArrowUpRight, RotateCw } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { type ReactNode } from 'react'
 import { Reveal } from './reveal'
+import { InitTree } from './init-tree'
 import { useInteractiveLoop } from './use-loop-stage'
 
 /* ----------------------------------------------------------------
@@ -264,27 +265,10 @@ export function HowItWorks() {
         </Reveal>
 
         <Reveal delay={0.08}>
-          {/* Entry point: the one-time scaffold, kept visually apart from the loop. */}
-          <div className="mt-10 flex flex-col gap-3 rounded-xl border border-dashed border-border bg-card/60 px-5 py-4 sm:flex-row sm:items-center sm:gap-5">
-            <div className="flex shrink-0 items-center gap-2.5">
-              <code className="font-mono text-[13px] text-foreground">
-                $ do-harness init
-              </code>
-              <span className="chip h-6 text-[11px] text-muted-foreground">
-                one-time
-              </span>
-            </div>
-            <p className="text-[13px] leading-relaxed text-muted-foreground">
-              writes{' '}
-              <span className="font-mono text-[12px] text-foreground">
-                AGENTS.md
-              </span>
-              ,{' '}
-              <span className="font-mono text-[12px] text-foreground">
-                .agents/skills/
-              </span>
-              , the sensors, and the libSQL state.
-            </p>
+          {/* Entry point: the one-time scaffold, kept visually apart from
+              the loop. The tree assembles itself; facts per the README. */}
+          <div className="mt-10">
+            <InitTree />
           </div>
 
           {/* The loop: 2x2 clockwise on desktop, vertical stack on mobile. */}

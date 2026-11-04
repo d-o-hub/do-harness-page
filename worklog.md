@@ -86,3 +86,19 @@ Work Log:
 
 Stage Summary:
 - The page is now provably image-free at the network level and every animated diagram pauses its clock when offscreen or when the tab is hidden (recommendation 2), the thesis section shows the RED loop as a live terminal (recommendation 1), and the explorable pin from recommendation 3 carries over.
+
+---
+Task ID: 5
+Agent: main (Z.ai)
+Task: Complete the remaining recommendations: 4 (animated init file tree) and 6 (OG social image). Recommendation 5 (shared clock) was already satisfied by the shared use-loop-stage hook.
+
+Work Log:
+- Re-verified the exact init scaffold list against the README before drawing anything: do-harness.toml, AGENTS.md, USE_RESTRICTIONS.md, plans/invariants.json, .agents/skills/ (harness + skill-creator), .gitignore entries, and the libSQL state at .do-harness/agent_state.db.
+- New src/components/site/init-tree.tsx, replacing the static init strip in how-it-works.tsx. The command row ($ do-harness init + one-time chip) stays; the file list below now assembles itself: rows land every 240ms, hold for 10 steps, and the scaffold replays. Rows use invisible placeholders so the reserved height (132px mobile / 66px sm+ two-column) never jumps; annotations sit right-aligned and hide below sm. Gated by useVisibilityGate (pauses offscreen / hidden tab); reduced motion renders the full tree statically with animate-in disabled. Rows are aria-hidden inside a role="img" panel whose label enumerates the real scaffold paths.
+- Recommendation 6: built scripts/og.html using the exact site tokens (OKLCH palette, Space Grotesk + JetBrains Mono via Google Fonts, signal green, tinted chips) and rendered it to public/og.png (1200x630) with agent-browser. Content: wordmark + repo path, headline "Agents that prove their work." with prove in signal green, mono subline "feedforward guides in / feedback verdicts out / exit 0 or it is not done", the four loop stages with 03 sensors highlighted and a signal arrow, plus the exit 0 GREEN / exit 1 RED verdict chips. Fixed a first-render bug where the verdict chips wrapped their text (white-space: nowrap + tighter gaps).
+- Wired metadata in src/app/layout.tsx: metadataBase from NEXT_PUBLIC_SITE_URL (falls back to http://localhost:3000 for dev), openGraph images with 1200x630 /og.png + alt text, and twitter summary_large_image card.
+- Verified: lint clean, tsc clean for site sources. Live meta tags confirmed (og:image, og:image:alt, twitter:card). Init-tree cycle sampled over time (1 row, 4 rows, 6 rows, hold), screenshot-verified in light and dark; the how-it-works loop still cycles with stage highlights and traveling dots. Mobile 390: single-column tree, annotations hidden, zero horizontal overflow. Console and page errors clean.
+
+Stage Summary:
+- All six improvement items are now done: RED terminal (1), visibility gating (2), explorable pin (3), init file tree (4), shared clock (5), OG image (6).
+- Deploy note: set NEXT_PUBLIC_SITE_URL to the production origin so og:image resolves to an absolute shareable URL.

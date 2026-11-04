@@ -16,6 +16,9 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
+  ),
   title: 'do-harness: agents that prove their work',
   description:
     'A compiled agent-execution harness CLI. Feedforward guides plus feedback sensors that agents and CI must pass before code ships.',
@@ -33,6 +36,22 @@ export const metadata: Metadata = {
     description:
       'Feedforward guides plus feedback sensors that agents and CI must pass.',
     type: 'website',
+    locale: 'en_US',
+    images: [
+      {
+        url: '/og.png',
+        width: 1200,
+        height: 630,
+        alt: 'do-harness: agents that prove their work. The four-stage loop from guides to state, with the verdicts exit 0 GREEN and exit 1 RED.',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'do-harness: agents that prove their work',
+    description:
+      'Feedforward guides plus feedback sensors that agents and CI must pass.',
+    images: ['/og.png'],
   },
 }
 
