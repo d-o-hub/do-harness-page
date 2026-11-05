@@ -41,6 +41,15 @@ server state beyond a cached GitHub star fetch.
 - `.github/workflows/ci.yml` — CI on push/PR runs the same three
   gates as the definition of done: lint, tsc, build. Keep it in sync
   when a gate changes.
+- `.agents/skills/impeccable/` — external design skill pack
+  (impeccable v4.8.0): 24 design commands plus a 62-rule slop
+  detector. Copilot integration lives in `.github/` (agents, hooks,
+  a second skill copy), a Codex hook in `.codex/`. The 21MB engine
+  binaries are gitignored; the launcher re-downloads them
+  checksum-verified on first run, or restore with
+  `npx impeccable install`. Detector:
+  `.agents/skills/impeccable/scripts/impeccable detect <target>`.
+  It reads `DESIGN.md` as brand context, so keep that file current.
 - `worklog.md` — append-only task log; every finished task appends
   a `Task ID` entry (Agent, Task, Work Log, Stage Summary).
 

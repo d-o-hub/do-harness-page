@@ -58,3 +58,7 @@ tool-results/
 upload/
 download/
 scripts/*.png
+# impeccable engine binaries (21MB each): the launcher re-downloads
+# them checksum-verified on first run, or restore with `npx impeccable install`
+.agents/skills/impeccable/scripts/bin/
+.github/skills/impeccable/scripts/bin/

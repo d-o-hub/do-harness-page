@@ -187,3 +187,19 @@ Work Log:
 
 Stage Summary:
 - DESIGN.md is the single readable token reference: every value in it is extracted from globals.css or grep-verified in component usage, and the extension checklist binds future token edits to keeping both themes, the doc, and the skill in sync.
+
+---
+Task ID: 10
+Agent: main (Z.ai)
+Task: Install the impeccable design skill pack into the repo (npx impeccable install).
+
+Work Log:
+- Researched the tool first: impeccable (pbakaus/impeccable, npm v4.8.0) is a cross-harness design skill pack: 24 design commands (polish, critique, audit, bolder, distill...) plus a deterministic 62-rule slop detector. Non-interactive install: npx impeccable install -y --scope=project (node v24 present).
+- What landed: .agents/skills/impeccable/ (SKILL.md + 30 reference playbooks + launcher scripts + 5 agent tomls), a GitHub Copilot copy in .github/skills/impeccable/ with 4 agent definitions and a postToolUse design-hook manifest in .github/hooks/, and a Codex hook in .codex/hooks.json. Our three site skills are untouched and sit alongside it.
+- Commit strategy: the two 21MB linux-x64 engine binaries are gitignored (.agents and .github copies). Verified from the launcher source that the binary self-restores: lookup order is IMPECCABLE_BIN, sibling binary, home cache, version-pinned cache, then a checksum-verified download on first run, so fresh clones work after one launcher call or npx impeccable install. Skill text (2.3M per copy) is committed.
+- eslint gate: the bundled scripts/*.js in both skill copies produced 156 warnings, breaking the zero-warnings gate. Added .agents/**, .codex/**, .github/** to eslint ignores (mirroring tsconfig's skills exclusion). Lint back to clean, tsc clean.
+- Smoke tests: (1) src/ regex scan: 25 files, exit 0, zero findings. (2) Full rendered-page scan with the bundled Chrome (IMPECCABLE_BROWSER pointed at the agent-browser chrome, standalone server on :3100): 16 primary findings + 5 advisories. Triage: 6x undersized-ui-text on the 10px mini-kickers (11px is the detector's floor for functional text), 1x 11px caption line, 2x line-length ~88ch, 1x overused-font on Space Grotesk (deliberate brand choice, accept), 2x pulsing-dot on the diagram live indicators (defensible: the loop genuinely is live; also blinking terminal cursor is a code-context convention), em-dash advisory is a false positive (counts --record/--strict CLI flags), 3x straggler advisories fixable with text-pretty. The scan also surfaced a real Unicode em-dash in a sitemap.ts comment; fixed (docs-only change, lint+tsc re-run clean, no build impact).
+- Documented the pack, the binary restore path, and the DESIGN.md brand-context dependency in the AGENTS.md repository map. Next agent-chat step per the tool: /impeccable init writes PRODUCT.md; /impeccable document would read our existing DESIGN.md.
+
+Stage Summary:
+- Impeccable is installed project-wide (agent skill + Copilot + Codex integrations) with a 42MB binary cost kept out of git via the launcher's documented self-restore. The 62-rule detector runs against the live page and its first scan produced a concrete, triaged fix list: the 10px mini-kicker bump to 11px is the main actionable item.
