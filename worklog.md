@@ -138,3 +138,19 @@ Work Log:
 
 Stage Summary:
 - The repo now contains exactly what the landing page ships: src/app + src/components/site, two purposeful scripts, public/og.png, AGENTS.md, DEPLOY.md, and three agent skills — nothing else. Full-repo tsc and lint are clean with no filters, and the production QA sweep is green.
+
+---
+Task ID: 7 (completion)
+Agent: main (Z.ai)
+Task: Re-verify the cleanup + AGENTS.md + skills state with evidence after a session boundary, and close two residual hardening gaps.
+
+Work Log:
+- Evidence-based re-verification: AGENTS.md, all three skills, lean package.json, pruned src/ tree, tsconfig/eslint ignores all confirmed on disk; rg found zero stale references to the deleted template stack (@/lib, @/hooks, components/ui, prisma, examples, mini-services). Confirmed AGENTS.md's "ten sections" claim against page.tsx (10 composed section components).
+- Residual 1: scripts/qa-prod.sh wrote its server log to the repo root (server-qa.log regenerated on every QA run). Changed the log path to /tmp/do-harness-qa-server.log and deleted the stray file; *.log was already gitignored, this fixes the physical litter too.
+- Residual 2: next.config.ts still carried the template's typescript.ignoreBuildErrors: true, which let a type error ship through the build despite the AGENTS.md gate. Removed it (kept reactStrictMode: false as-is; behavior depends on it). This build ran its TypeScript check for the first time and passed clean.
+- Untracked the three scripts/tour-*.png QA captures (tracked before the scripts/*.png ignore rule landed); QA regenerates and the ignore rule now holds for future runs.
+- Full gate re-run on the hardened config: bun run lint exit 0, bunx tsc --noEmit exit 0, bun run build clean (6/6 static routes incl. robots.txt + sitemap.xml, / prerendered 1h), scripts/qa-prod.sh FAIL=0 — zero page errors, zero console output, scrollWidth === innerWidth at 1440/768/390, meta (og:image, twitter:card, twitter:image, canonical) present, init tree 4→6 rows, RED terminal 3→7 lines, hero loop Stage 02→03, three tour screenshots captured and visually confirmed (all sections render in light theme), then removed from disk.
+- Committed as "chore: enforce type gate in build, QA log to /tmp, untrack tour pngs"; work tree clean.
+
+Stage Summary:
+- The build itself now enforces the type gate (no more ignoreBuildErrors escape hatch), QA runs leave no artifacts in the repo, and the whole verification chain — lint, tsc, build, prod QA sweep, visual tour — is green on the hardened config. AGENTS.md and the three .agents/skills/ entries are accurate against the code as it stands.
