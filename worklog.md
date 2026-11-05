@@ -102,3 +102,21 @@ Work Log:
 Stage Summary:
 - All six improvement items are now done: RED terminal (1), visibility gating (2), explorable pin (3), init file tree (4), shared clock (5), OG image (6).
 - Deploy note: set NEXT_PUBLIC_SITE_URL to the production origin so og:image resolves to an absolute shareable URL.
+
+---
+Task ID: 6
+Agent: main (Z.ai)
+Task: Deploy readiness — production build proof, env-driven SEO routes (sitemap + robots), canonical, and a production-mode QA sweep with a full-page screenshot tour.
+
+Work Log:
+- First re-verified the claimed-complete Task 5 state end to end (init tree cycling at 1440/390, og.png serving, meta present) before adding anything; found and documented that the summary had mislabeled recommendations 4+6 as pending when they were already shipped.
+- SEO hardening: new src/app/sitemap.ts and src/app/robots.ts (MetadataRoute), both deriving absolute URLs from NEXT_PUBLIC_SITE_URL with the localhost:3000 fallback, same convention as layout.tsx metadataBase. robots keeps the explicit social-crawler entries (Googlebot/Bingbot/Twitterbot/facebookexternalhit) from the old static file and adds the Sitemap line; deleted public/robots.txt so the generated route wins.
+- Added page-level canonical (alternates.canonical './') in src/app/page.tsx; first edit landed mid-import-block and was restructured so imports stay contiguous.
+- Production build: bun run build clean (7/7 static pages; /robots.txt and /sitemap.xml generated as static routes, / prerendered with 1h revalidate).
+- Production QA sweep (scripts/qa-prod.sh — one process, because the sandbox reaps background servers between tool calls): standalone server on :3100, zero page errors, zero console output, zero horizontal overflow at 1440/768/390, meta verified (og:image, twitter:card, twitter:image, canonical), init tree 4→6 rows, RED terminal 3→7 lines (diagnosed a false alarm first: querySelector('[aria-hidden]') matched the window-chrome dot spans, not the transcript; div[aria-hidden] is the correct selector), hero loop Stage 02→03.
+- Full-page screenshot tour scripts/tour-desktop-light.png, tour-desktop-dark.png, tour-mobile-light.png. First captures showed blank sections below the fold: full-page capture never intersects the once:true Reveal wrappers (artifact, not a bug). Warmup pass added to the script; first warmup silently failed because html { scroll-behavior: smooth } kept restarting interrupted scrollTo animations — fixed with an explicit scrollBehavior:'auto' override during the pass. Final tour shows all eight sections rendered in light, dark, and 390px mobile.
+- Wrote DEPLOY.md: the one env var, what consumes it, standalone build/run commands, runtime needs (no db/secrets, star fetch degrades gracefully), and a 4-curl post-deploy verification recipe.
+
+Stage Summary:
+- The landing page is deploy-ready: production build verified, SEO routes (sitemap/robots/canonical/OG) all derive from NEXT_PUBLIC_SITE_URL, and the prod-mode QA tour proves every animation, section, and viewport works outside dev mode.
+- To ship: set NEXT_PUBLIC_SITE_URL, bun run build, run the standalone server (or any Node 18+ container), then run the DEPLOY.md verification curls.

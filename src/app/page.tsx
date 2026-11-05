@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { Nav } from '@/components/site/nav'
 import { Hero } from '@/components/site/hero'
 import { LogoStrip } from '@/components/site/logo-strip'
@@ -8,6 +9,10 @@ import { Install } from '@/components/site/install'
 import { Compliance } from '@/components/site/compliance'
 import { Cta } from '@/components/site/cta'
 import { Footer } from '@/components/site/footer'
+
+export const metadata: Metadata = {
+  alternates: { canonical: './' },
+}
 
 const REPO_API = 'https://api.github.com/repos/d-o-hub/do-harness'
 
