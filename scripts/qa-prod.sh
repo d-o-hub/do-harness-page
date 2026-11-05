@@ -12,7 +12,7 @@ FAIL=0
 cleanup() { pkill -f "standalone/server.js" 2>/dev/null; }
 trap cleanup EXIT
 
-setsid nohup env PORT=$PORT NODE_ENV=production bun .next/standalone/server.js </dev/null > server-qa.log 2>&1 &
+setsid nohup env PORT=$PORT NODE_ENV=production bun .next/standalone/server.js </dev/null > /tmp/do-harness-qa-server.log 2>&1 &
 sleep 3
 curl -s -o /dev/null --max-time 5 http://localhost:$PORT || { echo "FATAL: server not up"; exit 1; }
 echo "== server up on $PORT =="
