@@ -11,6 +11,12 @@ text, one signal green tied to the product's verdict colors. All
 colors are OKLCH CSS variables defined in `src/app/globals.css`
 (`:root` light, `.dark` dark). Never hardcode a hex — use tokens.
 
+**The complete token reference lives in `DESIGN.md`** (repo root):
+full light+dark color tables, typography scale with measured usage,
+shape, spacing, z-index, motion, and the extension checklist. Read
+it before touching any visual change; the table below is the
+fast-moving subset.
+
 ### Token inventory
 
 | Token | Light | Role |

@@ -34,6 +34,9 @@ server state beyond a cached GitHub star fetch.
   infrastructure.
 - `scripts/og.html` — source of truth for `public/og.png`.
 - `scripts/qa-prod.sh` — one-shot production QA sweep.
+- `DESIGN.md` — the design token reference: full color/typography/
+  shape/motion inventory with values, semantic rules, and the
+  extension checklist. Keep it in sync with `globals.css`.
 - `DEPLOY.md` — deploy checklist and post-deploy verification.
 - `.github/workflows/ci.yml` — CI on push/PR runs the same three
   gates as the definition of done: lint, tsc, build. Keep it in sync

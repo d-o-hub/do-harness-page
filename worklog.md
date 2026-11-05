@@ -170,3 +170,20 @@ Work Log:
 
 Stage Summary:
 - The repo now enforces its own definition of done in CI, ships structured data for the software product, returns a branded token-correct 404, and sends baseline security headers. QA sweep and DEPLOY.md cover all of it; no sandbox artifacts remain in git.
+
+---
+Task ID: 9
+Agent: main (Z.ai)
+Task: Create DESIGN.md, the design token reference for the codebase.
+
+Work Log:
+- Extracted every value from src/app/globals.css directly (not from memory): raw OKLCH custom properties for :root and .dark, the @theme inline mapping, --radius and its derived scale, both easing tokens, and all @layer component classes with their exact specs.
+- Measured component usage before writing the typography table: rg over site components for clamp() displays, tracking values, mono sizes. Found the real scale (hero clamp(2.75rem, 7vw, 4.5rem) leading 1.05, section heading clamp(1.9rem, 3.4vw, 2.9rem), kickers 12px/0.14em, mono data 13px, mini kickers 10px/0.14em, flow labels 11px/0.01em) and container conventions (max-w-1200, px-5 md:px-8, py-20 md:py-28, scroll-mt-24).
+- Verified the two sanctioned hex escapes: themeColor in layout.tsx (#f8f9f5 / #151b16) and the OKLCH mirror in scripts/og.html; documented why each exists.
+- Caught two of my own draft claims being wrong during self-verification and fixed them: hero leading is 1.05 not 1.08 (that is the CTA), and 10px annotations use 0.14em uppercase (mini kickers), not the flow-label's 0.01em. DESIGN.md claims are now grep-verified against the code.
+- Documented: token flow (root/.dark to @theme to utilities), full light+dark color tables with roles, semantic rules (signal = verdict green only, destructive = failure only, primary is ink not green), typography with families and scale, shape lock with derived radii, spacing/layout conventions, z-scale 40/50/60, motion tokens + duration inventory + the non-negotiable guards (visibility gate, reduced motion, once:true), component class specs, base layer, dark parity rule, and a 5-step extension checklist.
+- Cross-referenced: AGENTS.md repository map points to DESIGN.md; the site-design skill now names DESIGN.md as the complete token reference and keeps its own table as the fast subset.
+- Docs-only change (no .ts/.tsx/.css touched), so lint/tsc/build are unaffected; no browser sweep needed. No em/en dashes in the document (checked).
+
+Stage Summary:
+- DESIGN.md is the single readable token reference: every value in it is extracted from globals.css or grep-verified in component usage, and the extension checklist binds future token edits to keeping both themes, the doc, and the skill in sync.
