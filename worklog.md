@@ -120,3 +120,21 @@ Work Log:
 Stage Summary:
 - The landing page is deploy-ready: production build verified, SEO routes (sitemap/robots/canonical/OG) all derive from NEXT_PUBLIC_SITE_URL, and the prod-mode QA tour proves every animation, section, and viewport works outside dev mode.
 - To ship: set NEXT_PUBLIC_SITE_URL, bun run build, run the standalone server (or any Node 18+ container), then run the DEPLOY.md verification curls.
+
+---
+Task ID: 7
+Agent: main (Z.ai)
+Task: Codebase cleanup, then AGENTS.md and .agents/skills/ agent skills for the repo.
+
+Work Log:
+- Evidence-based inventory first: the site imports none of the template stack — zero usage of src/components/ui (44 shadcn components), src/hooks, src/lib/db.ts (prisma), src/lib/utils.ts, src/app/api (hello-world route), prisma/, db/custom.db, examples/websocket (the source of the pre-existing tsc errors), mini-services/ (empty), tests/ (sandbox runtime scripts), components.json, and tailwind.config.ts (dead v3 config: no @config directive, references hsl vars that no longer exist).
+- Deleted: all of the above plus dev debris — 21 scripts/*.png screenshots, page-render.html, crop_how.py, diag-terminal.sh, dev.log, server-qa.log, tsconfig.tsbuildinfo, and the stale .next/ (its dev-generated validator still referenced the removed api route). Kept scripts/og.html (OG source) and scripts/qa-prod.sh (QA sweep). Sandbox infra untouched: .zscripts, tool-results, skills/, upload/, download/, Caddyfile, .env.
+- package.json rewritten: name do-harness-landing v1.0.0, db:* scripts dropped, 58 direct dependencies removed (60 with transitive). Kept: next/react/react-dom, framer-motion, lucide-react, next-themes (theme-provider + nav), simple-icons (logo-strip), tw-animate-css (globals.css), sharp (future image optimization).
+- tsconfig.json: skills/ added to exclude (system library, not project code — eslint already ignored it). .gitignore: added .zscripts/, tool-results/, upload/, download/, scripts/*.png. bun.lock resynced.
+- Result: bunx tsc --noEmit and bun run lint now pass the WHOLE repo with zero errors/warnings — no output filters needed for the first time in the project. Net diff: 117 files changed, 17 insertions, 7457 deletions.
+- AGENTS.md: routing/completion contract — what the repo is, commands, repository map, 8 hard rules (README-only facts, copy rules, semantic signal green, shape lock, motion gating, accessibility, zero-images, tokens-only), definition of done, skill index.
+- .agents/skills/: site-design (OKLCH token inventory with light values, semantic accent + shape locks, copy rules, OG regeneration procedure via scripts/og.html), site-motion (useVisibilityGate/useInteractiveLoop API with exact constants STAGE_MS 2200 / RESUME_MS 6000, the three patterns: script terminal, step-machine grid with placeholder-reserved heights, stage loop panels; shared rules and the aria-hidden selector gotcha), site-verify (static gates, qa-prod.sh single-process requirement, agent-browser recipes, full-page warmup gotchas: once:true Reveal + smooth-scroll override, post-deploy curls, worklog convention).
+- Verified the cleaned codebase end to end: bun run build clean (5 routes), qa-prod.sh FAIL=0 — zero console errors, zero overflow at 1440/768/390, RED terminal 3→7 lines, hero loop Stage 02→03, tour screenshots in light/dark/mobile identical in behavior to pre-cleanup.
+
+Stage Summary:
+- The repo now contains exactly what the landing page ships: src/app + src/components/site, two purposeful scripts, public/og.png, AGENTS.md, DEPLOY.md, and three agent skills — nothing else. Full-repo tsc and lint are clean with no filters, and the production QA sweep is green.
