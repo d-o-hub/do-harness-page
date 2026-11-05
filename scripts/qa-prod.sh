@@ -44,6 +44,15 @@ echo "== meta tags =="
 EV "JSON.stringify({og: document.querySelector('meta[property=\"og:image\"]')?.content, tw: document.querySelector('meta[name=\"twitter:card\"]')?.content, canon: document.querySelector('link[rel=\"canonical\"]')?.href ?? 'none'})"
 EV "({sm: document.querySelector('meta[name=\"twitter:image\"]')?.content ?? 'none'})"
 
+echo "== security headers =="
+curl -sI http://localhost:$PORT | rg -i 'x-content-type|referrer-policy|x-frame' || FAIL=1
+
+echo "== json-ld =="
+EV "(() => { try { const d = JSON.parse(document.querySelector('script[type=\"application/ld+json\"]').textContent); return d['@type'] + ' / ' + d.name + ' / ' + d.url; } catch { return 'MISSING'; } })()"
+
+echo "== 404 page =="
+curl -s -o /dev/null -w "status /nope: %{http_code}\n" http://localhost:$PORT/nope
+
 echo "== init tree cycles =="
 EV "document.querySelector('[aria-label^=\"do-harness init scaffolds\"]').scrollIntoView({block:'center'}); 'ok'"
 sleep 1.2

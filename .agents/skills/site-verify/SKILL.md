@@ -63,9 +63,19 @@ matches a dot and returns 0 children — always target
 ## Post-deploy verification
 
 From `DEPLOY.md`: four curls (`/og.png` 200 image/png, og:image +
-canonical absolute URLs, robots Sitemap line, sitemap `<loc>`), then
-paste the URL into a social composer once. All of it resolves from
+canonical absolute URLs, robots Sitemap line, sitemap `<loc>`), a
+fifth for the security headers (`X-Content-Type-Options`,
+`Referrer-Policy`, `X-Frame-Options` — set in `next.config.ts`), then
+paste the URL into a social composer once. All URLs resolve from
 `NEXT_PUBLIC_SITE_URL`; it falls back to `http://localhost:3000`.
+
+## CI
+
+`.github/workflows/ci.yml` runs lint, tsc, and build on every push
+and PR (bun 1.3.14 pinned). It mirrors the static gates above; if
+you change a gate, change CI in the same commit. The 404 page
+(`src/app/not-found.tsx`) renders through the root layout, so theme
+and tokens apply — verify it at `curl -s -o /dev/null -w "%{http_code}" <origin>/nope` (expect 404, not 500).
 
 ## Worklog
 

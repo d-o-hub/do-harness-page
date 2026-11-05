@@ -50,6 +50,7 @@ curl -s -o /dev/null -w "%{http_code} %{content_type}\n" https://<origin>/og.png
 curl -s https://<origin>/ | rg 'og:image|canonical'                                     # absolute prod URLs
 curl -s https://<origin>/robots.txt                                                     # Sitemap: https://<origin>/sitemap.xml
 curl -s https://<origin>/sitemap.xml | rg '<loc>'                                       # https://<origin>
+curl -sI https://<origin>/ | rg 'X-Content-Type|Referrer-Policy|X-Frame'                # security headers (next.config.ts)
 ```
 
 Then paste the URL into the Twitter/Slack/LinkedIn composer once and

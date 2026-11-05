@@ -154,3 +154,19 @@ Work Log:
 
 Stage Summary:
 - The build itself now enforces the type gate (no more ignoreBuildErrors escape hatch), QA runs leave no artifacts in the repo, and the whole verification chain — lint, tsc, build, prod QA sweep, visual tour — is green on the hardened config. AGENTS.md and the three .agents/skills/ entries are accurate against the code as it stands.
+
+---
+Task ID: 8
+Agent: main (Z.ai)
+Task: Production polish — residual git cleanup, CI, JSON-LD structured data, branded 404, security headers.
+
+Work Log:
+- Final git residue: .env, .zscripts/, tool-results/, download/ were still tracked (committed before the ignore rules landed). git rm --cached all four; files stay on disk, git tree carries only repo content. .env in git was the notable one.
+- CI: new .github/workflows/ci.yml — on push to main and PRs, bun 1.3.14 pinned via setup-bun, then bun install --frozen-lockfile, bun run lint, bunx tsc --noEmit, bun run build. It mirrors the AGENTS.md definition of done exactly; AGENTS.md and the site-verify skill now point at it and require keeping it in sync with the gates.
+- JSON-LD: page.tsx renders a schema.org SoftwareApplication (name, applicationCategory DeveloperApplication, operatingSystem Any, url from NEXT_PUBLIC_SITE_URL, codeRepository, author d-o-hub org, description identical to the metadata description so no new uncheckable claims exist). QA sweep now parses it and reports type/name/url.
+- Branded 404: new src/app/not-found.tsx through the root layout (fonts, theme, tokens). Card with destructive exit 1 chip (semantically correct: a missing page is a failure verdict), mono 404 kicker, "Nothing runs here." headline, one factual line, btn-primary "Back to the home page". Caught my own copy violating the checkable-claims rule on first render ("install guide ... link below" while the link only goes home) and fixed it. Verified light + dark screenshots, zero overflow, zero console errors, status 404 (not 500).
+- Security headers: next.config.ts headers() on all paths — X-Content-Type-Options nosniff, Referrer-Policy strict-origin-when-cross-origin, X-Frame-Options SAMEORIGIN. Verified via curl -sI in the sweep; DEPLOY.md recipe gained the fifth curl.
+- Gates: lint exit 0, tsc exit 0, build clean (6 routes, /_not-found now from the custom page), qa-prod.sh FAIL=0 including the three new assertions (headers, JSON-LD, 404 status) plus all regression samples (overflow 1440/768/390, init tree 4→6, terminal 3→7, hero Stage 02→03, three tour screenshots).
+
+Stage Summary:
+- The repo now enforces its own definition of done in CI, ships structured data for the software product, returns a branded token-correct 404, and sends baseline security headers. QA sweep and DEPLOY.md cover all of it; no sandbox artifacts remain in git.

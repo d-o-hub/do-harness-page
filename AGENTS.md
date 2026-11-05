@@ -26,14 +26,18 @@ server state beyond a cached GitHub star fetch.
 
 - `src/app/` — `layout.tsx` (metadata, fonts, theme provider),
   `page.tsx` (section composition + GitHub star fetch with 1h
-  revalidate), `globals.css` (**all design tokens**), `robots.ts`,
-  `sitemap.ts`, `icon.svg`.
+  revalidate + JSON-LD SoftwareApplication), `globals.css` (**all
+  design tokens**), `not-found.tsx` (branded 404, same tokens),
+  `robots.ts`, `sitemap.ts`, `icon.svg`.
 - `src/components/site/` — one file per section or diagram; no
   shared UI kit. `use-loop-stage.ts` is the shared animation
   infrastructure.
 - `scripts/og.html` — source of truth for `public/og.png`.
 - `scripts/qa-prod.sh` — one-shot production QA sweep.
 - `DEPLOY.md` — deploy checklist and post-deploy verification.
+- `.github/workflows/ci.yml` — CI on push/PR runs the same three
+  gates as the definition of done: lint, tsc, build. Keep it in sync
+  when a gate changes.
 - `worklog.md` — append-only task log; every finished task appends
   a `Task ID` entry (Agent, Task, Work Log, Stage Summary).
 
@@ -79,6 +83,8 @@ server state beyond a cached GitHub star fetch.
   `scrollWidth === innerWidth` at 1440 / 768 / 390, animations
   verified cycling in light **and** dark.
 - `worklog.md` has the new Task ID entry.
+- CI (`.github/workflows/ci.yml`) runs the same gates on push; a
+  change that breaks it locally breaks it there too.
 
 ## Skills
 

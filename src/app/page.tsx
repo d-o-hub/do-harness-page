@@ -15,6 +15,24 @@ export const metadata: Metadata = {
 }
 
 const REPO_API = 'https://api.github.com/repos/d-o-hub/do-harness'
+const REPO_URL = 'https://github.com/d-o-hub/do-harness'
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'do-harness',
+  applicationCategory: 'DeveloperApplication',
+  operatingSystem: 'Any',
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000',
+  codeRepository: REPO_URL,
+  description:
+    'A compiled agent-execution harness CLI. Feedforward guides plus feedback sensors that agents and CI must pass before code ships.',
+  author: {
+    '@type': 'Organization',
+    name: 'd-o-hub',
+    url: 'https://github.com/d-o-hub',
+  },
+}
 
 async function getStars(): Promise<number | null> {
   try {
@@ -37,6 +55,10 @@ export default async function Home() {
 
   return (
     <div className="flex min-h-svh flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-background focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:shadow-sm"
