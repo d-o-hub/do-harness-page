@@ -202,7 +202,7 @@ function StageCard({
         >
           {n}
         </button>
-        <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+        <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
           {kicker}
         </span>
       </div>
@@ -233,7 +233,7 @@ const EXIT_CODES = (
   <span className="inline-flex flex-wrap items-center gap-1.5">
     <span className="chip chip-tinted h-7">0 GREEN</span>
     <span className="chip h-7">1 RED</span>
-    <span className="chip h-7">2 config error</span>
+    <span className="chip h-7">2 VACUOUS</span>
   </span>
 )
 
@@ -383,7 +383,7 @@ export function HowItWorks() {
                 >
                   <RotateCw className="size-5 text-signal" aria-hidden="true" />
                 </motion.div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
                   the loop
                 </span>
               </div>
@@ -407,15 +407,12 @@ export function HowItWorks() {
                 className="size-1.5 shrink-0 animate-pulse rounded-full bg-signal motion-reduce:animate-none"
                 aria-hidden="true"
               />
-              <motion.p
+              <p
                 key={stage}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.35 }}
-                className="font-mono text-[12px] leading-snug text-muted-foreground"
+                className="animate-in fade-in duration-300 motion-reduce:animate-none font-mono text-[12px] leading-snug text-muted-foreground"
               >
                 {stage >= 0 ? EXPLAIN[stage] : IDLE_EXPLAIN}
-              </motion.p>
+              </p>
             </div>
             <a
               href="https://github.com/d-o-hub/do-harness/blob/main/docs/adoption.md"

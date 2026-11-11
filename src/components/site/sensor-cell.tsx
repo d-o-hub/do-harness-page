@@ -1,16 +1,17 @@
 'use client'
 
 import { Check } from 'lucide-react'
-import { motion, useReducedMotion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useReducedMotion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
 import { useVisibilityGate } from './use-loop-stage'
 
 /* ----------------------------------------------------------------
    Live sensor suite: the five sensors the packs select run in
    sequence, each flips to a check, then the verdict lands on
-   exit 0 GREEN. The cycle restarts. Tick 0 matches the server
-   render; under prefers-reduced-motion the render folds `reduce`
-   into the all-pass frame and the interval never starts.
+   exit 0 GREEN. The server renders the all-pass verdict, so the
+   static page shows the proof; with JS the suite rewinds and runs
+   one pass, then holds the verdict. Reduced motion folds `reduce`
+   into the all-pass frame and the chain never starts.
 ----------------------------------------------------------------- */
 
 const SENSORS = ['fmt', 'clippy', 'test', 'typecheck', 'build']
@@ -18,19 +19,29 @@ const SENSORS = ['fmt', 'clippy', 'test', 'typecheck', 'build']
 const TICK_MS = 620
 const TICKS_PER_SENSOR = 2 // one tick running, one tick settled
 const ALL_PASS_AT = SENSORS.length * TICKS_PER_SENSOR // 10
-const HOLD_TICKS = 5 // verdict stays on screen, then the cycle restarts
-const CYCLE = ALL_PASS_AT + HOLD_TICKS
 
 export function SensorCell() {
   const reduce = useReducedMotion()
   const { containerRef, live } = useVisibilityGate()
-  const [tick, setTick] = useState(0)
+  // Server render and hydration both start from the verdict; the
+  // suite rewinds to tick 0, runs once, holds on GREEN.
+  const [tick, setTick] = useState(ALL_PASS_AT)
+  const beganRef = useRef(false)
 
   useEffect(() => {
-    if (reduce || !live) return
-    const id = setInterval(() => setTick((t) => (t + 1) % CYCLE), TICK_MS)
-    return () => clearInterval(id)
-  }, [reduce, live])
+    if (reduce || !live || beganRef.current) return
+    const id = setTimeout(() => {
+      beganRef.current = true
+      setTick(0)
+    }, 0)
+    return () => clearTimeout(id)
+  }, [live, reduce])
+
+  useEffect(() => {
+    if (reduce || !live || tick >= ALL_PASS_AT) return
+    const id = setTimeout(() => setTick((t) => t + 1), TICK_MS)
+    return () => clearTimeout(id)
+  }, [tick, live, reduce])
 
   const allPass = Boolean(reduce) || tick >= ALL_PASS_AT
 
@@ -39,7 +50,7 @@ export function SensorCell() {
       ref={containerRef}
       className="flex h-full flex-col rounded-xl border border-border bg-card p-5"
     >
-      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+      <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
         verify · sensor suite
       </p>
 
@@ -83,15 +94,12 @@ export function SensorCell() {
 
       <div className="mt-4 border-t border-border pt-4">
         {allPass ? (
-          <motion.span
+          <span
             key="green"
-            initial={{ opacity: 0, y: 3 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-            className="chip chip-tinted h-7 w-full justify-center text-[11px]"
+            className="chip chip-tinted h-7 w-full justify-center text-[11px] animate-in fade-in slide-in-from-top-1 duration-300 motion-reduce:animate-none"
           >
             exit 0 · GREEN
-          </motion.span>
+          </span>
         ) : (
           <span className="chip h-7 w-full justify-center text-[11px] text-muted-foreground">
             running

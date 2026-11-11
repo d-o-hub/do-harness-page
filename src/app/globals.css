@@ -248,6 +248,50 @@
     color: var(--signal-ink);
   }
 
+  /* Entrance (hero) and scroll reveals (Reveal). Everything hidden
+     here is hidden ONLY under html.js, the class the bootstrap
+     script in layout.tsx adds before first paint. A no-JS or
+     pre-hydration page renders fully visible, so the static page
+     carries the same proof as the hydrated one. */
+  .js .enter {
+    opacity: 0;
+    animation: enter-in var(--enter-duration, 0.3s) var(--ease-out-strong)
+      var(--enter-delay, 0s) forwards;
+  }
+  @keyframes enter-in {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .js [data-reveal] {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  .js [data-reveal][data-reveal-shown] {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.4s var(--ease-out-strong),
+      transform 0.4s var(--ease-out-strong);
+    transition-delay: var(--reveal-delay, 0s);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .js .enter {
+      animation: none;
+      opacity: 1;
+    }
+    .js [data-reveal] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
   /* Traveling signal dot for the active edge. It mounts only while
      the loop state machine marks that edge active, so reduced-motion
      users never see it move; the media query hides it entirely. */

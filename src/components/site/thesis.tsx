@@ -2,9 +2,9 @@ import { RedTerminal } from './red-terminal'
 import { Reveal } from './reveal'
 
 const EXIT_CODES = [
-  { code: '0', label: 'All sensors passed' },
-  { code: '1', label: 'A sensor failed' },
-  { code: '2', label: 'Usage, config, or discovery error' },
+  { code: '0', label: 'GREEN · all sensors passed', tone: 'text-signal-ink' },
+  { code: '1', label: 'RED · a sensor failed', tone: 'text-destructive' },
+  { code: '2', label: 'VACUOUS · zero sensors, nothing proven', tone: 'text-muted-foreground' },
 ]
 
 /**
@@ -46,7 +46,7 @@ export function Thesis() {
             <dl className="mt-4 divide-y divide-border">
               {EXIT_CODES.map((e) => (
                 <div key={e.code} className="flex items-baseline gap-4 py-3">
-                  <dt className="w-6 shrink-0 font-mono text-sm text-signal-ink">
+                  <dt className={`w-6 shrink-0 font-mono text-sm ${e.tone}`}>
                     {e.code}
                   </dt>
                   <dd className="text-sm text-muted-foreground">{e.label}</dd>
@@ -65,7 +65,7 @@ export function Thesis() {
         <Reveal delay={0.08} className="lg:col-span-12">
           <div className="grid grid-cols-1 items-center gap-10 lg:grid-cols-12 lg:gap-8">
             <div className="lg:col-span-4">
-              <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
                 what red looks like
               </p>
               <p className="mt-4 max-w-[46ch] text-[15px] leading-relaxed text-muted-foreground">

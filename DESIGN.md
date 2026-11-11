@@ -79,7 +79,7 @@ glyph set).
 | Card heading | `text-3xl` / `md:text-4xl` | `-0.02em` | 404 page |
 | Lead / body | `text-lg`, `leading-relaxed` | default | `text-muted-foreground` for prose |
 | Kicker | mono `text-[12px]`, `uppercase` | `0.14em` | Labels diagrams only, max two per region |
-| Mini kicker | mono `text-[10px]`, `uppercase` | `0.14em` | Cell-level labels inside diagram panels |
+| Mini kicker | mono `text-[11px]`, `uppercase` | `0.14em` | Cell-level labels inside diagram panels (11px is the legibility floor) |
 | Mono data | mono `text-[13px]` | default | Terminal lines, cmd rows |
 | Flow label | mono `text-[11px]` | `0.01em` | `.flow-label`, masks the line it interrupts |
 
@@ -144,21 +144,30 @@ diagram, and never collides with page chrome.
 | --- | --- |
 | 150ms | Button and icon-button transitions |
 | 300ms | `animate-in fade-in` row entrances (init tree) |
+| 300ms (staggered 70ms) | Hero entrance (`.enter`, CSS keyframe on first paint) |
+| 400ms | Scroll reveals (`Reveal`, IntersectionObserver release) |
 | 1.4s + 0.25s delay | `.flow-dot` edge travel |
 | 2200ms | `STAGE_MS` stage advance (use-loop-stage.ts) |
 | 6000ms | `RESUME_MS` pinned-stage resume |
 
 ### Non-negotiable guards
 
-- Every timer and interval sits behind `useVisibilityGate()`: nothing
-  ticks offscreen or in a hidden tab.
+- Every timer sits behind `useVisibilityGate()`: nothing ticks
+  offscreen or in a hidden tab.
 - `prefers-reduced-motion`: the `.flow-dot` is `display: none`, keyframe
   classes get `motion-reduce:animate-none`, scroll behavior goes
   `auto`, diagrams render their completed static state, pinning still
   works (color flips only).
-- Scroll reveals (`Reveal` in reveal.tsx) are `whileInView` with
-  `once: true, margin: '-80px'`; content is opacity-animated, never
-  conditionally rendered.
+- No-JS parity: the bootstrap script in `layout.tsx` adds `html.js`
+  before first paint; every initial-hidden style (`.enter`,
+  `[data-reveal]`) is scoped under it. Without JS the page renders
+  fully visible, proof panels included.
+- Proof panels server-render their completed state (terminal
+  transcript, scaffold tree, sensor verdict). With JS they rewind and
+  play exactly once, then hold. Only the hero loop cycles.
+- Scroll reveals (`Reveal` in reveal.tsx) release once, 80px inside
+  the viewport, via IntersectionObserver; content is
+  opacity-animated, never conditionally rendered.
 - Animated transcript heights are reserved up front so nothing jumps.
 
 ## 8. Component classes

@@ -1,57 +1,41 @@
-'use client'
-
-import { motion, useReducedMotion } from 'framer-motion'
 import { ArrowRight, Github } from 'lucide-react'
 import { LoopPanel } from './loop-panel'
 
 const REPO_URL = 'https://github.com/d-o-hub/do-harness'
 
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.06 } },
-}
-
-const item = {
-  hidden: { opacity: 0, y: 12 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.3, ease: [0.23, 1, 0.32, 1] as const },
-  },
-}
+/**
+ * Hero entrance is CSS, not framer: the `.enter` class hides content
+ * only under html.js and runs its animation on first paint, so the
+ * no-JS page renders the full hero and the staggered entrance does
+ * not wait for hydration. Delays mirror the old stagger (0 / 0.07 /
+ * 0.14s left column, 0.15s right panel).
+ */
+const DELAY = (s: number) => ({ '--enter-delay': `${s}s` }) as React.CSSProperties
 
 export function Hero() {
-  const reduce = useReducedMotion()
-
   return (
     <section aria-labelledby="hero-heading" className="relative overflow-hidden">
       <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-12 px-5 pb-16 pt-14 md:px-8 md:pt-20 lg:grid-cols-12 lg:gap-8 lg:pb-24">
-        <motion.div
-          className="lg:col-span-7"
-          variants={reduce ? undefined : container}
-          initial={reduce ? { opacity: 0 } : 'hidden'}
-          animate={reduce ? { opacity: 1 } : 'show'}
-        >
-          <motion.h1
+        <div className="enter lg:col-span-7">
+          <h1
             id="hero-heading"
-            variants={reduce ? undefined : item}
             className="max-w-[13ch] text-balance text-[clamp(2.75rem,7vw,4.5rem)] font-semibold leading-[1.05] tracking-[-0.03em]"
           >
             Agents that <span className="text-signal-ink">prove</span> their
             work.
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            variants={reduce ? undefined : item}
-            className="mt-6 max-w-[52ch] text-pretty text-lg leading-relaxed text-muted-foreground"
+          <p
+            style={DELAY(0.07)}
+            className="enter mt-6 max-w-[52ch] text-pretty text-lg leading-relaxed text-muted-foreground"
           >
             A compiled CLI pairing feedforward guides with feedback sensors.
             Agents and CI pass the same checks before code ships.
-          </motion.p>
+          </p>
 
-          <motion.div
-            variants={reduce ? undefined : item}
-            className="mt-8 flex flex-wrap items-center gap-3"
+          <div
+            style={DELAY(0.14)}
+            className="enter mt-8 flex flex-wrap items-center gap-3"
           >
             <a href="#install" className="btn btn-primary">
               Install do-harness
@@ -66,17 +50,15 @@ export function Hero() {
               <Github className="size-4" strokeWidth={2} aria-hidden="true" />
               View on GitHub
             </a>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
-        <motion.div
-          className="lg:col-span-5 lg:mt-10"
-          initial={reduce ? { opacity: 0 } : { opacity: 0, y: 16 }}
-          animate={reduce ? { opacity: 1 } : { opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1], delay: 0.15 }}
+        <div
+          style={{ ...DELAY(0.15), '--enter-duration': '0.45s' } as React.CSSProperties}
+          className="enter lg:col-span-5 lg:mt-10"
         >
           <LoopPanel />
-        </motion.div>
+        </div>
       </div>
     </section>
   )

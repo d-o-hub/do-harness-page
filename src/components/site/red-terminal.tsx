@@ -1,7 +1,7 @@
 'use client'
 
 import { useReducedMotion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useVisibilityGate } from './use-loop-stage'
 
 /* ----------------------------------------------------------------
@@ -12,9 +12,11 @@ import { useVisibilityGate } from './use-loop-stage'
    signature; at 3 consecutive failures the sensor is halted (not
    executed, reported failed) until the underlying issue is fixed.
 
-   The script advances on a timeout chain, gated by the same
-   visibility hook as the other diagrams. Reduced motion renders
-   the completed transcript, static.
+   The server renders the completed transcript, so the static page
+   carries the whole story. With JS, the replay starts once the
+   diagram is live, runs a single pass, and holds the GREEN verdict
+   (peak-end). Reduced motion never starts it. The script chain is
+   gated by the same visibility hook as the other diagrams.
 ----------------------------------------------------------------- */
 
 type Tone = 'cmd' | 'body' | 'strike' | 'halt' | 'pass'
@@ -97,15 +99,24 @@ function TerminalLine({ text, tone }: { text: string; tone: Tone }) {
 export function RedTerminal() {
   const reduce = useReducedMotion()
   const { containerRef, live } = useVisibilityGate()
-  // step = number of visible lines; 1 matches the server render.
-  const [step, setStep] = useState(1)
+  // Server render and hydration both start from the completed
+  // transcript; the replay then rewinds to line 1, exactly once.
+  const [step, setStep] = useState(LINES)
+  const beganRef = useRef(false)
 
   useEffect(() => {
-    if (reduce || !live) return
-    const delay = SCRIPT[step - 1].hold
+    if (reduce || !live || beganRef.current) return
     const id = setTimeout(() => {
-      setStep((s) => (s >= LINES ? 1 : s + 1))
-    }, delay)
+      beganRef.current = true
+      setStep(1)
+    }, 0)
+    return () => clearTimeout(id)
+  }, [live, reduce])
+
+  useEffect(() => {
+    if (reduce || !live || step >= LINES) return
+    const delay = SCRIPT[step - 1].hold
+    const id = setTimeout(() => setStep((s) => s + 1), delay)
     return () => clearTimeout(id)
   }, [step, live, reduce])
 

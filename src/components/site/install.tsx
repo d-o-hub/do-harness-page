@@ -59,7 +59,15 @@ export function Install() {
           </h2>
           <p className="mt-5 max-w-[60ch] text-pretty text-[17px] leading-relaxed text-muted-foreground">
             Prebuilt binaries for Linux, macOS, and Windows. The installer
-            checks the SHA-256 checksum before anything lands on PATH.
+            checks the SHA-256 checksum before anything lands on PATH.{' '}
+            <a
+              href="https://raw.githubusercontent.com/d-o-hub/do-harness/main/scripts/install.sh"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-foreground underline decoration-border underline-offset-4 hover:decoration-foreground"
+            >
+              Read install.sh before running it.
+            </a>
           </p>
         </Reveal>
 
@@ -75,8 +83,8 @@ export function Install() {
                         {m.desc}
                       </p>
                     </div>
-                    <div className="cmd mt-3 flex items-center gap-1 overflow-x-auto py-2 pl-3.5 pr-1.5">
-                      <code className="whitespace-nowrap text-foreground">
+                    <div className="cmd mt-3 flex items-center gap-1 py-2 pl-3.5 pr-1.5">
+                      <code className="min-w-0 flex-1 break-words text-foreground">
                         {m.cmd}
                       </code>
                       <CopyButton command={m.cmd} label={`Copy ${m.label} command`} />
@@ -124,8 +132,8 @@ export function Install() {
                   <code className="break-words text-foreground">{CI_CMD}</code>
                 </div>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                  Exit 0 passes, 1 fails, 2 means the workspace is
-                  misconfigured. No build step required.
+                  Exit 0 passes, 1 fails, 2 reports VACUOUS: a workspace with
+                  zero sensors proves nothing. No build step required.
                 </p>
               </div>
             </div>

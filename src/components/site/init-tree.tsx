@@ -1,7 +1,7 @@
 'use client'
 
 import { useReducedMotion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useVisibilityGate } from './use-loop-stage'
 
 /* ----------------------------------------------------------------
@@ -11,10 +11,12 @@ import { useVisibilityGate } from './use-loop-stage'
    .agents/skills/ (harness + skill-creator), and the local libSQL
    state at .do-harness/agent_state.db.
 
-   Rows land one by one, hold, and the scaffold replays. Gated by
-   the shared visibility hook; reduced motion shows the full tree
-   statically. Rows are aria-hidden; the panel label carries the
-   facts for assistive tech.
+   The server renders the completed tree, so the static page shows
+   the full scaffold. With JS the rows rewind and land one by one,
+   once, and the tree holds (it matches the "one-time" chip).
+   Gated by the shared visibility hook; reduced motion keeps the
+   full tree statically. Rows are aria-hidden; the panel label
+   carries the facts for assistive tech.
 ----------------------------------------------------------------- */
 
 const FILES = [
@@ -27,22 +29,31 @@ const FILES = [
 ]
 
 const STEP_MS = 240
-const HOLD_STEPS = 10 // full tree stays up before the scaffold replays
 
 export function InitTree() {
   const reduce = useReducedMotion()
   const { containerRef, live } = useVisibilityGate()
-  const [step, setStep] = useState(0)
+  // Server render and hydration both start from the full tree; the
+  // assembly rewinds to zero rows, exactly once, then holds.
+  const [step, setStep] = useState(FILES.length)
+  const beganRef = useRef(false)
 
   useEffect(() => {
-    if (reduce || !live) return
-    const id = setInterval(() => {
-      setStep((s) => (s >= FILES.length + HOLD_STEPS ? 0 : s + 1))
-    }, STEP_MS)
-    return () => clearInterval(id)
-  }, [reduce, live])
+    if (reduce || !live || beganRef.current) return
+    const id = setTimeout(() => {
+      beganRef.current = true
+      setStep(0)
+    }, 0)
+    return () => clearTimeout(id)
+  }, [live, reduce])
 
-  const visible = reduce ? FILES.length : Math.min(step, FILES.length)
+  useEffect(() => {
+    if (reduce || !live || step >= FILES.length) return
+    const id = setTimeout(() => setStep((s) => s + 1), STEP_MS)
+    return () => clearTimeout(id)
+  }, [step, live, reduce])
+
+  const visible = reduce ? FILES.length : step
 
   return (
     <div

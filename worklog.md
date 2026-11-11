@@ -221,3 +221,26 @@ Work Log:
 
 Stage Summary:
 - PRODUCT.md is the repo's captured product truth and .impeccable/config.json pins code-first as the standing build path; init's completion gate is satisfied. The template residue that slipped into af3d643 is gone, so tsc and build are honest again and CI parity holds. Deliberately undecided: secondary solo-dev audience stays marked unconfirmed; no visual work was done (init writes product truth only).
+
+---
+Task ID: 12
+Agent: main (Z.ai)
+Task: Run $impeccable critique / (dual-agent per protocol), then implement the user-scoped fix pass (top 4 + the 11px kicker bump).
+
+Work Log:
+- Setup: target resolved to src/app/page.tsx (slug src-app-page-tsx); no ignore list; critique playbook (reference/critique.md) read in full.
+- Dual-agent run (mandatory path, Task tool exposed): Assessment A (design review: source + live screenshots at 1440/390, light+dark via agent-browser with the qa-prod warmup recipe; heuristic scores + personas) and Assessment B (detector: source scan exit 0; rendered desktop 1440x900 = 16w+5a, mobile 390x844 = 13w+5a; overlay injection succeeded in-page, console evidence captured; live-server stopped with --keep-inject, no source mutation). Neither saw the other's output.
+- Score: 28/32 (Good), n/a #7 and #10 (Persuade mode). Five priority issues; two detector false positives documented (em-dash = CLI flags; Space Grotesk = brand choice).
+- Persisted snapshot .impeccable/critique/2026-11-11T16-39-27Z__src-app-page-tsx.md (28/32, p0=0 p1=2); first run, no trend. User answers: install trust first; motion = play once (hero keeps looping); scope top 4; bump 10px kickers to 11px.
+- P1 install trust (install.tsx): cmd rows restructured so CopyButton is pinned outside the code span; code now wraps (break-words) instead of nowrap+scroll, so no command is ever clipped; added a "Read install.sh before running it." link to the raw installer script; exit-2 copy fixed.
+- P1 SSR voids (harden): RedTerminal, InitTree, SensorCell now server-render their completed state (full 13-line transcript, all 6 tree rows, all-pass verdict); with JS they rewind once and play a single pass, then hold (beganRef + deferred setTimeout, satisfying react-hooks/set-state-in-effect); visibility-gated as before; reduced motion keeps the completed static state.
+- Reveal no-JS parity: reveal.tsx rewritten from framer whileInView to IntersectionObserver + data-reveal attributes; globals.css adds .js-gated [data-reveal] and .enter styles; layout.tsx gains a bootstrap script adding html.js before first paint, so the no-JS page renders fully visible. Hero de-framered to the same .enter CSS (stagger preserved via --enter-delay; hero is now a server component). Caption crossfades and the sensor GREEN chip swapped from framer inline opacity to tw-animate classes, eliminating all inline opacity:0 from SSR HTML (verify-ssr asserts 0).
+- P2 exit-code vocabulary: thesis dl now 0 GREEN (signal-ink) / 1 RED (destructive) / 2 VACUOUS (muted) with verdict-prefixed labels; how-it-works chip "2 config error" -> "2 VACUOUS"; install copy aligned to the VACUOUS contract. The pass-colored RED "1" is gone.
+- P2 motion story: only the hero loop cycles; terminal/tree/sensor play once and hold (peak-end on GREEN); init tree now matches its "one-time" chip.
+- P3 typeset: all five 10px mono mini-kickers bumped to 11px (loop-panel numerals, how-it-works x2, thesis, sensor-cell).
+- Docs in the same commit: DESIGN.md mini-kicker row 11px, durations table + guards rewritten (no-JS parity, play-once-hold, IO reveals), component-level comments updated.
+- Verification: gates green (lint 0 / tsc 0 / build 6 routes); qa-prod.sh FAIL=0 twice incl. fresh tour screenshots; scripts/verify-ssr.sh 14/14 assertions (SSR states, links, VACUOUS copy, zero inline opacity:0); detector re-scan: source exit 0, rendered desktop 11 findings (undersized-ui-text 10 -> 0; remainder = documented FPs + out-of-scope stragglers/line-length); visual check desktop light + dark + mobile crop of the install rows.
+- New scripts: scripts/critique-a-shots.sh, scripts/critique-b-scan.sh, scripts/verify-ssr.sh.
+
+Stage Summary:
+- The critique pass is fully closed: 2 P1s fixed (install trust, SSR voids), exit-code vocabulary unified, motion story aligned to the one-time claim, kickers at the 11px floor. Page now passes its own thesis: the static HTML carries the full proof. Out of scope left documented: straggler/line-length advisories, pulsing-dot x2 (intentional live indicators), trust-bar specificity.

@@ -54,7 +54,7 @@ function Node({
       }`}
     >
       <span
-        className={`font-mono text-[10px] tracking-[0.14em] transition-colors duration-500 ${
+        className={`font-mono text-[11px] tracking-[0.14em] transition-colors duration-500 ${
           active ? 'text-signal-ink' : 'text-muted-foreground'
         }`}
       >
@@ -190,15 +190,12 @@ export function LoopPanel() {
           className="size-1.5 shrink-0 animate-pulse rounded-full bg-signal motion-reduce:animate-none"
           aria-hidden="true"
         />
-        <motion.p
+        <p
           key={caption}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.35 }}
-          className="font-mono text-[12px] leading-snug text-muted-foreground"
+          className="animate-in fade-in duration-300 motion-reduce:animate-none font-mono text-[12px] leading-snug text-muted-foreground"
         >
           {caption}
-        </motion.p>
+        </p>
       </div>
     </div>
   )
