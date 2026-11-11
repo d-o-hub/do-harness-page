@@ -51,7 +51,7 @@ function ThemeToggle() {
     <button
       type="button"
       className="icon-btn"
-      aria-label="Toggle color theme"
+      aria-label="Switch between light and dark theme"
       onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
     >
       <Moon

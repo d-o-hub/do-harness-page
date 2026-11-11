@@ -244,3 +244,21 @@ Work Log:
 
 Stage Summary:
 - The critique pass is fully closed: 2 P1s fixed (install trust, SSR voids), exit-code vocabulary unified, motion story aligned to the one-time claim, kickers at the 11px floor. Page now passes its own thesis: the static HTML carries the full proof. Out of scope left documented: straggler/line-length advisories, pulsing-dot x2 (intentional live indicators), trust-bar specificity.
+
+---
+Task ID: 13
+Agent: main (Z.ai)
+Task: $impeccable polish / — sweep the remaining documented advisories (straggler x3+3, line-length x2) and the critique's weakest-specificity verdict (trust bar).
+
+Work Log:
+- Setup: polish playbook read in full; critique-storage latest returned the current snapshot (fingerprint unchanged, exit 0), snapshot read and named. Fresh evidence via scripts/critique-b-scan.sh: source 0; desktop 11 findings (straggler x3, line-length x2, tiny-text x2, pulsing-dot x2, overused-font, em-dash); mobile 9 (straggler x3 among them). Session protocol: impeccable context run at session start; polish classified drift as local defects (missing text-pretty) plus one content-specificity defect (trust bar).
+- Stragglers: text-pretty applied to the flagged elements and their same-role siblings — thesis prose container + exit-code dl dd + red-loop paragraph, install method descriptions + Windows note + wire-step notes + CI note, footer blurb, loop-panel dd (13.5px), compliance prose. text-wrap: pretty is the detector's own remedy; DESIGN.md already mandates it for body paragraphs, these were the gaps.
+- Line-length: compliance prose container gains max-w-[65ch], matching the thesis measure (46rem at 17px measured >80ch at 1440px). Chips and the code line keep full width.
+- Trust bar (logo-strip.tsx): anonymous logo soup (Rust/Node/TS/GH Actions/GitLab/Lighthouse) replaced with four claim-bearing items, each checkable against the page or repo: npm "zero-install via npx, node 18+" (install method 1), Rust "prebuilt binary, no runtime to install" (shell/cargo methods, footer), Git "git hooks gate commits and pushes" (hook install note), GitHub Actions "CI runs the same gates on every push" (compliance copy). Dropped TS/GitLab/Lighthouse as undocumented compatibilities (Lighthouse worst: web sensors are axe/console/performance). Claude icon deliberately excluded: the page never names Claude, a brand logo would imply a partnership claim; PRODUCT.md evidence discipline forbids it. Band form, lead-in line, Reveal, aria-label preserved.
+- Minor observation fixed: theme-toggle aria-label now states the action ("Switch between light and dark theme") — hydration-safe static wording. Reviewed and left as-is: GitHub icon 2x (both functional), compliance tint (intentionally quiet band), hero CTA widths (standard wrap).
+- Concurrency note: session tool connection dropped mid-pass; a harness auto-checkpoint (fe8d800) captured the first three edited files (thesis/install/footer, verified byte-exact); mode-only chmod artifacts on 5 files restored via git restore; remaining edits completed after restart.
+- Verification: gates green (lint 0 / tsc 0 / build 6 routes); verify-ssr.sh 14/14; detector re-scan: source 0, desktop 11 -> 6, mobile 9 -> 6 (straggler 0, line-length 0 both viewports; remainder = documented set: tiny-text x2 on 11px code-context chrome, pulsing-dot x2 intentional, em-dash + Space Grotesk FPs); qa-prod.sh FAIL=0; visual check light + dark + mobile crops of trust bar and compliance.
+- Snapshot closed: critique-storage close exit 0 (all 5 Priority Issues cleared by Task 12; this pass cleared the leftover advisories it had documented as out of scope).
+
+Stage Summary:
+- Polish pass closed every remaining detector advisory that had a real remedy: text now has no stragglers and no over-measure lines on either viewport, and the trust bar states four verifiable integration claims instead of implying six anonymous ones. The page's remaining findings are exactly the documented intentional set. Deliberately out of scope: pulsing-dot x2 (live indicators), compliance band tint, GitHub icon count, CTA widths.

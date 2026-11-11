@@ -211,7 +211,7 @@ function StageCard({
         <dt className="font-mono text-[13px] leading-relaxed text-foreground">
           {term}
         </dt>
-        <dd className="mt-1.5 text-[13.5px] leading-relaxed text-muted-foreground">
+        <dd className="mt-1.5 text-pretty text-[13.5px] leading-relaxed text-muted-foreground">
           {value}
         </dd>
       </dl>

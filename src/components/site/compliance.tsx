@@ -22,7 +22,7 @@ export function Compliance() {
           >
             Built for regulated loops
           </h2>
-          <div className="mt-7 space-y-5 text-[17px] leading-relaxed text-muted-foreground">
+          <div className="mt-7 max-w-[65ch] space-y-5 text-pretty text-[17px] leading-relaxed text-muted-foreground">
             <p>
               do-harness enforces deterministic, computational controls over
               the agent development loop: build-time verification sensors,
@@ -46,7 +46,7 @@ export function Compliance() {
             ))}
           </ul>
 
-          <p className="mt-6 text-sm text-muted-foreground">
+          <p className="mt-6 text-pretty text-sm text-muted-foreground">
             Run{' '}
             <code className="font-mono text-[13px] text-foreground">
               do-harness compliance

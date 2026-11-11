@@ -10,6 +10,7 @@ target_fingerprint: "sha256:c396a44c9d775c063fbbc0921e0a687f26ecf5fefb425d13eb52
 target_path: /home/z/my-project/src/app/page.tsx
 timestamp: 2026-11-11T16-39-27Z
 slug: src-app-page-tsx
+closed: true
 ---
 # Critique — do-harness landing page (/)
 
