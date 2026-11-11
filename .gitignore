@@ -62,3 +62,5 @@ scripts/*.png
 # them checksum-verified on first run, or restore with `npx impeccable install`
 .agents/skills/impeccable/scripts/bin/
 .github/skills/impeccable/scripts/bin/
+# impeccable live-mode inject state (machine-local, regenerated per session)
+.impeccable/live/

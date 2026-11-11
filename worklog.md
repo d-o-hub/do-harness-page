@@ -203,3 +203,21 @@ Work Log:
 
 Stage Summary:
 - Impeccable is installed project-wide (agent skill + Copilot + Codex integrations) with a 42MB binary cost kept out of git via the launcher's documented self-restore. The 62-rule detector runs against the live page and its first scan produced a concrete, triaged fix list: the 10px mini-kicker bump to 11px is the main actionable item.
+
+---
+Task ID: 11
+Agent: main (Z.ai)
+Task: Run the impeccable skill: bare invocation presented the context-aware menu, user picked init; then repair the build the install commit had broken.
+
+Work Log:
+- Setup per SKILL.md: `impeccable context` once for the session (NO_PRODUCT_MD flagged, DESIGN.md loaded, RESOLVED_CONTEXT ok) and routing.md read for the no-argument menu. Menu presented with init as the top recommendation; user confirmed init (structured question tool).
+- init Step 2 (explore): grounded product truth in the page copy itself (hero, thesis, cta, bento, install, compliance), JSON-LD description, logo-strip honesty check (compatible tooling, not customers). Platform hypothesis: web.
+- init Step 3 (interview, one round, three questions): primary user confirmed as DevEx/platform teams gating AI-generated code in CI (Team/CI first); durable positioning confirmed as the compiled verdict (single static binary + exit-code contract 0/1/2 = GREEN/RED/VACUOUS); evidence discipline confirmed as repo-truth-only with an explicit must-never-fabricate list.
+- init Step 4: wrote PRODUCT.md (impeccable:product-schema 1) at PROJECT_ROOT with confirmed facts, marked secondary audience as unconfirmed, and the absences section (no testimonials, customer counts, benchmarks, adoption metrics).
+- init Step 5: buildPath asked as its own question (harness has native image generation, no value recorded): user chose code-first; wrote `.impeccable/config.json` `{"buildPath": "code"}`. Live mode: `detect-csp` returned shape null; wrote `.impeccable/live/config.json` (files: src/app/layout.tsx, insertBefore </body>, commentSyntax jsx, cspChecked true) and gitignored `.impeccable/live/` as machine-local state.
+- Build repair discovered during gates: commit af3d643 (author date backdated to Nov 5, committer date 15:49 today, i.e. concurrent with this session) had swept ~75 files of sandbox template residue into git besides the skill pack: src/components/ui (34-file shadcn kit), src/hooks, src/lib (clsx/prisma stubs), src/app/api/route.ts, examples/websocket, tailwind.config.ts (v3-style), tests/*.sh, db/, prisma/, mini-services/, components.json, public/harness-*.png, public/robots.txt (conflicts with the env-driven src/app/robots.ts), public/logo.svg, scripts junk. Nothing in the kept tree imports any of it (rg verified); bun.lock change was mode-only.
+- Removed all residue with git rm (75 files). Gates re-run: bun install --frozen-lockfile clean; one stale .next/types validator error (referenced the deleted api route) cleared by the fresh build; final chain lint 0 / tsc 0 / build green with the same route table (/ + /_not-found + /icon.svg + robots.txt + sitemap.xml).
+- AGENTS.md repository map: added PRODUCT.md and .impeccable/config.json entries; impeccable detector line now says it reads PRODUCT.md and DESIGN.md as brand context.
+
+Stage Summary:
+- PRODUCT.md is the repo's captured product truth and .impeccable/config.json pins code-first as the standing build path; init's completion gate is satisfied. The template residue that slipped into af3d643 is gone, so tsc and build are honest again and CI parity holds. Deliberately undecided: secondary solo-dev audience stays marked unconfirmed; no visual work was done (init writes product truth only).

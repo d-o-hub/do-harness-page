@@ -37,7 +37,16 @@ server state beyond a cached GitHub star fetch.
 - `DESIGN.md` — the design token reference: full color/typography/
   shape/motion inventory with values, semantic rules, and the
   extension checklist. Keep it in sync with `globals.css`.
+- `PRODUCT.md` — the captured product record (impeccable
+  product-schema 1): confirmed primary users, purpose, positioning,
+  operating context, and the evidence-discipline absences future work
+  must not fabricate. Owned by the impeccable init flow; update it
+  when product truth changes, never silently.
 - `DEPLOY.md` — deploy checklist and post-deploy verification.
+- `.impeccable/config.json` — impeccable workflow default captured by
+  init: `"buildPath": "code"` (landing/showcase surfaces build
+  code-first; design comps are not generated). `.impeccable/live/` is
+  gitignored machine-local state.
 - `.github/workflows/ci.yml` — CI on push/PR runs the same three
   gates as the definition of done: lint, tsc, build. Keep it in sync
   when a gate changes.
@@ -49,7 +58,8 @@ server state beyond a cached GitHub star fetch.
   checksum-verified on first run, or restore with
   `npx impeccable install`. Detector:
   `.agents/skills/impeccable/scripts/impeccable detect <target>`.
-  It reads `DESIGN.md` as brand context, so keep that file current.
+  It reads `PRODUCT.md` and `DESIGN.md` as brand context, so keep both
+  files current.
 - `worklog.md` — append-only task log; every finished task appends
   a `Task ID` entry (Agent, Task, Work Log, Stage Summary).
 
