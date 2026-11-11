@@ -79,7 +79,7 @@ export function Install() {
                   <div className="py-6">
                     <div className="flex flex-col gap-0.5 md:flex-row md:items-baseline md:justify-between md:gap-6">
                       <h3 className="text-[15px] font-medium">{m.label}</h3>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-pretty text-sm text-muted-foreground">
                         {m.desc}
                       </p>
                     </div>
@@ -94,7 +94,7 @@ export function Install() {
               ))}
             </div>
             <Reveal>
-              <p className="mt-6 max-w-[65ch] text-sm leading-relaxed text-muted-foreground">
+              <p className="mt-6 max-w-[65ch] text-pretty text-sm leading-relaxed text-muted-foreground">
                 Windows installs from the{' '}
                 <a
                   href="https://github.com/d-o-hub/do-harness/releases"
@@ -119,7 +119,7 @@ export function Install() {
                     <div className="cmd overflow-x-auto px-3.5 py-2.5">
                       <code className="break-words text-foreground">{s.cmd}</code>
                     </div>
-                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                    <p className="mt-1.5 text-pretty text-sm leading-relaxed text-muted-foreground">
                       {s.note}
                     </p>
                   </li>
@@ -131,7 +131,7 @@ export function Install() {
                 <div className="cmd mt-3 overflow-x-auto px-3.5 py-2.5">
                   <code className="break-words text-foreground">{CI_CMD}</code>
                 </div>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                <p className="mt-2 text-pretty text-sm leading-relaxed text-muted-foreground">
                   Exit 0 passes, 1 fails, 2 reports VACUOUS: a workspace with
                   zero sensors proves nothing. No build step required.
                 </p>

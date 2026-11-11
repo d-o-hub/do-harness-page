@@ -24,7 +24,7 @@ export function Thesis() {
             Agents don&rsquo;t fail at writing code. They fail at proving
             it&rsquo;s done.
           </h2>
-          <div className="mt-7 max-w-[65ch] space-y-5 text-[17px] leading-relaxed text-muted-foreground">
+          <div className="mt-7 max-w-[65ch] space-y-5 text-pretty text-[17px] leading-relaxed text-muted-foreground">
             <p>
               A chat message that says done is a claim. do-harness turns it
               into evidence: the agent reads guides before it codes, then runs
@@ -49,7 +49,7 @@ export function Thesis() {
                   <dt className={`w-6 shrink-0 font-mono text-sm ${e.tone}`}>
                     {e.code}
                   </dt>
-                  <dd className="text-sm text-muted-foreground">{e.label}</dd>
+                  <dd className="text-pretty text-sm text-muted-foreground">{e.label}</dd>
                 </div>
               ))}
             </dl>
@@ -68,7 +68,7 @@ export function Thesis() {
               <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
                 what red looks like
               </p>
-              <p className="mt-4 max-w-[46ch] text-[15px] leading-relaxed text-muted-foreground">
+              <p className="mt-4 max-w-[46ch] text-pretty text-[15px] leading-relaxed text-muted-foreground">
                 A failing run is data. With{' '}
                 <code className="font-mono text-[13px] text-foreground">
                   --record

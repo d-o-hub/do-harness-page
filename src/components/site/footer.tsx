@@ -35,7 +35,7 @@ export function Footer() {
               do-harness
             </span>
           </div>
-          <p className="mt-4 max-w-[40ch] text-sm leading-relaxed text-muted-foreground">
+          <p className="mt-4 max-w-[40ch] text-pretty text-sm leading-relaxed text-muted-foreground">
             Feedforward guides plus feedback sensors for agent-driven
             development. MIT licensed, built in the open.
           </p>
