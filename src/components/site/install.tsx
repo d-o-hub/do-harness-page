@@ -42,7 +42,11 @@ const WIRE_STEPS = [
 const CI_CMD =
   'do-harness verify --format json --evidence .do-harness/evidence.json --strict'
 
-export function Install() {
+export function Install({
+  scriptChecksum,
+}: {
+  scriptChecksum: string | null
+}) {
   return (
     <section
       id="install"
@@ -89,6 +93,22 @@ export function Install() {
                       </code>
                       <CopyButton command={m.cmd} label={`Copy ${m.label} command`} />
                     </div>
+                    {m.label === 'Shell' && scriptChecksum !== null && (
+                      <div className="mt-2">
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                            install.sh &middot; sha256
+                          </span>
+                          <CopyButton
+                            command={scriptChecksum}
+                            label="Copy install.sh checksum"
+                          />
+                        </div>
+                        <code className="mt-1 block break-all font-mono text-[12.5px] leading-relaxed text-foreground">
+                          {scriptChecksum}
+                        </code>
+                      </div>
+                    )}
                   </div>
                 </Reveal>
               ))}

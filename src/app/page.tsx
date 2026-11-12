@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { createHash } from 'node:crypto'
 import { Nav } from '@/components/site/nav'
 import { Hero } from '@/components/site/hero'
 import { LogoStrip } from '@/components/site/logo-strip'
@@ -16,6 +17,8 @@ export const metadata: Metadata = {
 
 const REPO_API = 'https://api.github.com/repos/d-o-hub/do-harness'
 const REPO_URL = 'https://github.com/d-o-hub/do-harness'
+const INSTALL_SCRIPT_URL =
+  'https://raw.githubusercontent.com/d-o-hub/do-harness/main/scripts/install.sh'
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -50,8 +53,31 @@ async function getStars(): Promise<number | null> {
   }
 }
 
+/**
+ * SHA-256 of the exact bytes raw.githubusercontent serves for install.sh —
+ * the content `curl | sh` executes. Same source as the pipe, same 1h
+ * revalidate as the star count. null on any failure: the row degrades to
+ * the read-the-script link instead of showing a stale or invented hash.
+ */
+async function getInstallScriptChecksum(): Promise<string | null> {
+  try {
+    const res = await fetch(INSTALL_SCRIPT_URL, {
+      next: { revalidate: 3600 },
+    })
+    if (!res.ok) return null
+    const body = await res.arrayBuffer()
+    const hex = createHash('sha256').update(Buffer.from(body)).digest('hex')
+    return /^[0-9a-f]{64}$/.test(hex) ? hex : null
+  } catch {
+    return null
+  }
+}
+
 export default async function Home() {
-  const stars = await getStars()
+  const [stars, scriptChecksum] = await Promise.all([
+    getStars(),
+    getInstallScriptChecksum(),
+  ])
 
   return (
     <div className="flex min-h-svh flex-col">
@@ -72,7 +98,7 @@ export default async function Home() {
         <Thesis />
         <HowItWorks />
         <Bento />
-        <Install />
+        <Install scriptChecksum={scriptChecksum} />
         <Compliance />
         <Cta />
       </main>

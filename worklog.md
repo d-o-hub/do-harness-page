@@ -278,3 +278,18 @@ Work Log:
 
 Stage Summary:
 - The audit confirms the critique->harden->polish chain landed: no P0-P2 issues remain; both P3s are pre-registered optimization candidates. The page's remaining lever is content, not implementation: the install section cites checksum verification but cannot display the value (Jordan persona flag, needs the real SHA-256 from a release).
+
+---
+Task ID: 15
+Agent: main (Z.ai)
+Task: Close the audit's content lever - display the real install.sh SHA-256 beside the shell install row (Jordan persona's remaining trust gap).
+
+Work Log:
+- Feasibility: raw.githubusercontent.com reachable from the build environment; independent curl|sha256sum established ground truth d9612f0f...05ebc2 (200 OK).
+- page.tsx: getInstallScriptChecksum() fetches the exact bytes raw serves for install.sh (same source as the pipe) and hashes them with node:crypto; revalidate 3600 matches the star-count pattern; any failure or a non-64-hex result returns null. Fetched in Promise.all alongside stars; passed to Install as scriptChecksum.
+- install.tsx: Shell method row gains a checksum block - kicker "INSTALL.SH - SHA256" + CopyButton on line 1 (justify-between), full 64-hex value on line 2 (break-all, 12.5px mono, foreground). First attempt wrapped the Copy button onto an orphaned third line at 1440px; restructured to the deterministic two-line layout before commit. null degrades silently to the existing read-the-script link - nothing stale or invented is ever shown (PRODUCT.md evidence discipline).
+- verify-ssr.sh: +2 assertions (label SSR-rendered; the exact upstream hex displayed). Note: the pinned-hex assertion is deliberately brittle - if upstream changes install.sh, the assertion fails and forces re-verification of the new script before the page can ship. JSX renders &middot; as the literal character, first assertion draft had to use the real dot.
+- Verification: gates green (lint 0 / tsc 0 / build 6 routes); verify-ssr 16/16; atomic cross-check of the SSR HTML against a fresh upstream fetch MATCH; detector unchanged (source 0, desktop 6, mobile 6 = documented set, no findings from the new row); qa-prod FAIL=0; visual checks light + dark + mobile (hex wraps cleanly via break-all at 390px).
+
+Stage Summary:
+- The page now closes its own trust loop: the command it hands you, the script it pipes, and the hash of those exact bytes are all on the same row, copyable, and the displayed value was cross-checked against a live fetch during this task. Remaining page-level work is the two documented P3 optimize candidates from the audit (framer subset, flow-dot keyframe), by choice not omission.
