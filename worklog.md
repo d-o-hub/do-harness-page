@@ -262,3 +262,19 @@ Work Log:
 
 Stage Summary:
 - Polish pass closed every remaining detector advisory that had a real remedy: text now has no stragglers and no over-measure lines on either viewport, and the trust bar states four verifiable integration claims instead of implying six anonymous ones. The page's remaining findings are exactly the documented intentional set. Deliberately out of scope: pulsing-dot x2 (live indicators), compliance band tint, GitHub icon count, CTA widths.
+
+---
+Task ID: 14
+Agent: main (Z.ai)
+Task: $impeccable audit / — technical quality audit (documenting pass, no fixes by design).
+
+Work Log:
+- Protocol: audit.md read in full before executing; context re-anchored; git-state check caught the recurring scan-tooling chmod artifacts on 5 files and restored them.
+- Evidence (scripts/audit-scan.sh + scripts/audit-reprobe.sh, standalone :3103): detector source/desktop/mobile; computed-style probes at 1440/768/390/320; 200% text zoom; touch-target inventory; keyboard/skip-link/ring; resource transfer; heading/landmark/alt inventory; CSS-level reduced-motion review; contrast computed from the exact DESIGN.md token values via oklch->sRGB in Python (canvas rejects oklch; first browser contrast probe was invalid and was discarded, not reported).
+- Tooling caveats handled honestly: agent-browser media emulation silently ignores "reduce" (matches=false) so the reduce guards were verified at CSS level (three @media blocks: scroll auto, .enter/[data-reveal] frozen visible, .flow-dot display:none); the skip-link probe first matched the logo (both href="#top") and was re-done against the real sr-only link.
+- Results: 19/20 (Excellent) — A11y 4, Performance 3, Theming 4, Responsive 4, Integrity 4. Contrast: body 16.2/15.9, muted 7.6-7.9 (AAA), signal-ink-on-tint 7.7/8.3 (AAA). No overflow 320-1440; zoom-200% clean; 44px controls with the inline-text exception for text links; skip link sr-only->focus:not-sr-only z-50; H1x1->H2x6->H3x18->H4x1 no skips; 0 will-change; 172KB gz JS.
+- Findings: 0 P0/P1/P2, 2 P3 (.flow-dot keyframe animates top instead of transform; framer-motion still in 5 proof-panel components after the hero/reveal de-framer). Both documented with suggested command ($impeccable optimize), neither worth a standalone pass. Report persisted at .impeccable/audit/2026-11-12T16-23-26Z__src-app-page-tsx.md.
+- .next/standalone had been recycled between messages; rebuilt before scanning (gates green again, same 6-route table).
+
+Stage Summary:
+- The audit confirms the critique->harden->polish chain landed: no P0-P2 issues remain; both P3s are pre-registered optimization candidates. The page's remaining lever is content, not implementation: the install section cites checksum verification but cannot display the value (Jordan persona flag, needs the real SHA-256 from a release).
