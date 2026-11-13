@@ -293,3 +293,8 @@ Work Log:
 
 Stage Summary:
 - The page now closes its own trust loop: the command it hands you, the script it pipes, and the hash of those exact bytes are all on the same row, copyable, and the displayed value was cross-checked against a live fetch during this task. Remaining page-level work is the two documented P3 optimize candidates from the audit (framer subset, flow-dot keyframe), by choice not omission.
+
+Independent re-verification (continuation session, HEAD audit of 68daa8c):
+- Ground truth re-established from scratch: fresh curl of raw install.sh (6048 B, HTTP 200) hashes to d9612f0f...05ebc2 - equals the SSR-displayed hex and the pinned verify-ssr assertion (atomic cross-check MATCH, run twice in-session).
+- Gates re-run green (lint 0 / tsc 0 / build 6 routes, / static with 1h revalidate); verify-ssr 16/16; detector source 0, desktop 6 / mobile 6 = exactly the documented intentional set, no findings from the checksum row; visual crops light + dark + 390px mobile confirmed the deterministic two-line layout.
+- Hygiene: 68daa8c baked in the scan-tooling chmod artifacts (11 files flipped 100644->100755); normalized back to 644 canonical here and persisted scripts/verify-15.sh (mobile scan + atomic cross-check + install-row crops).
