@@ -298,3 +298,19 @@ Independent re-verification (continuation session, HEAD audit of 68daa8c):
 - Ground truth re-established from scratch: fresh curl of raw install.sh (6048 B, HTTP 200) hashes to d9612f0f...05ebc2 - equals the SSR-displayed hex and the pinned verify-ssr assertion (atomic cross-check MATCH, run twice in-session).
 - Gates re-run green (lint 0 / tsc 0 / build 6 routes, / static with 1h revalidate); verify-ssr 16/16; detector source 0, desktop 6 / mobile 6 = exactly the documented intentional set, no findings from the checksum row; visual crops light + dark + 390px mobile confirmed the deterministic two-line layout.
 - Hygiene: 68daa8c baked in the scan-tooling chmod artifacts (11 files flipped 100644->100755); normalized back to 644 canonical here and persisted scripts/verify-15.sh (mobile scan + atomic cross-check + install-row crops).
+
+---
+Task ID: 16
+Agent: main (Z.ai)
+Task: $impeccable optimize / - close both audit P3s: .flow-dot keyframe animating layout (top/left) and the framer-motion subset still shipped in 5 proof-panel components.
+
+Work Log:
+- Measured BEFORE (scripts/measure-js.sh, standalone server, gzip -9 of each served chunk): 685.7 KB raw / 208.7 KB gzip across 8 scripts. Confirmed the bottleneck is real before touching anything (optimize.md discipline).
+- flow-dot (P3-1): the span is now an invisible positioning wrapper animated with transform; the visible dot is its ::after. Wrapper is calc(100% - 8px) wide, so translateX(100%) reproduces the old left: calc(100% - 8px) endpoint exactly - geometry verified, zero markup changes at the 6 mount sites. y variants mirror it. Reduced-motion display:none kept.
+- framer subset (P3-2): useReducedMotion replaced by a 15-line matchMedia hook (use-reduced-motion.ts, live change listener; hydration-safe because every consumer's reduced-motion render equals the SSR completed state). The three infinite rotates (loop-panel badge 9s, how-it-works badge 9s, verdict ring 24s) replaced by spin-continuous CSS keyframes + motion-reduce:animate-none. verdict-panel drops its use client directive entirely (now a server component). All 7 framer imports gone; bun remove framer-motion - zero runtime markers in all 8 shipped chunks (verified by scanning for MotionConfig/framer-motion/AnimatePresence; the measure script's residual "framer-bearing" number was flagging my own comment strings, a false positive).
+- Measured AFTER: 574.3 KB raw / 172.5 KB gzip - minus 111.4 KB raw, minus 36.2 KB gzip (-17.3% page JS). Only continuous animations left are CSS on compositor-only properties.
+- Verified no regressions: gates green (lint 0 / tsc 0 / build 6 routes); verify-ssr 16/16 (SSR completed states, no inline opacity:0); motion probes via agent-browser eval: flow-dot mounted with animationName flow-travel-x and left STAYS 0px while transform changes over 400ms (the fix working live), spin-continuous-9/24 present and transforming, zero console errors; detector source 0, desktop 6 / mobile 6 = documented intentional set, unchanged; visual crops: how-it-works light, hero loop panel dark (dot caught mid-flight on the active edge, geometry intact), CTA verdict light (ring mid-rotation), mobile how-it-works.
+- DESIGN.md updated: durations table +9s/24s spins, guards rewritten (compositor-only continuous animations, no JS-driven animation remains, use-reduced-motion.ts documented), component classes gain .spin-continuous-9/-24 and the flow-dot wrapper/::after structure.
+
+Stage Summary:
+- Both audit P3s closed with before/after numbers: page JS down 17% (208.7 -> 172.5 KB gzip) and every continuous animation now runs on the compositor. The motion story is unchanged from the visitor's side - same durations, same gates, same reduced-motion behavior - because the replacements are 1:1 CSS. Page-level work queue is now empty: zero P0-P3 open.

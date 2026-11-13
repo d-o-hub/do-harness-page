@@ -1,6 +1,6 @@
 'use client'
 
-import { useReducedMotion } from 'framer-motion'
+import { usePrefersReducedMotion } from './use-reduced-motion'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 /* ----------------------------------------------------------------
@@ -54,7 +54,7 @@ export function useVisibilityGate() {
 }
 
 export function useInteractiveLoop(count: number) {
-  const reduce = useReducedMotion()
+  const reduce = usePrefersReducedMotion()
   const [stage, setStage] = useState(-1)
   const pinnedRef = useRef(false)
   const resumeRef = useRef<ReturnType<typeof setTimeout> | null>(null)

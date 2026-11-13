@@ -147,6 +147,7 @@ diagram, and never collides with page chrome.
 | 300ms (staggered 70ms) | Hero entrance (`.enter`, CSS keyframe on first paint) |
 | 400ms | Scroll reveals (`Reveal`, IntersectionObserver release) |
 | 1.4s + 0.25s delay | `.flow-dot` edge travel |
+| 9s / 24s linear, infinite | `spin-continuous` rotations (loop badges / verdict ring) |
 | 2200ms | `STAGE_MS` stage advance (use-loop-stage.ts) |
 | 6000ms | `RESUME_MS` pinned-stage resume |
 
@@ -154,10 +155,20 @@ diagram, and never collides with page chrome.
 
 - Every timer sits behind `useVisibilityGate()`: nothing ticks
   offscreen or in a hidden tab.
-- `prefers-reduced-motion`: the `.flow-dot` is `display: none`, keyframe
-  classes get `motion-reduce:animate-none`, scroll behavior goes
-  `auto`, diagrams render their completed static state, pinning still
-  works (color flips only).
+- Every continuous animation is CSS on compositor-only properties:
+  the `.flow-dot` wrapper translates with `transform` (the span is a
+  `calc(100% - 8px)` invisible wrapper; the dot is its `::after`, so
+  translating 100% reproduces the old `left: calc(100% - 8px)`
+  endpoint without animating layout), and the `spin-continuous`
+  keyframes rotate the loop badges and the verdict ring. No JS-driven
+  animation remains: framer-motion was removed from the dependency
+  tree in the optimize pass.
+- `prefers-reduced-motion`: the `.flow-dot` is `display: none`,
+  keyframe classes get `motion-reduce:animate-none`, scroll behavior
+  goes `auto`, diagrams render their completed static state, pinning
+  still works (color flips only). The reduced-motion flag in JS
+  (use-reduced-motion.ts, a 1:1 matchMedia replacement for framer's
+  `useReducedMotion`) only stops replay state machines from starting.
 - No-JS parity: the bootstrap script in `layout.tsx` adds `html.js`
   before first paint; every initial-hidden style (`.enter`,
   `[data-reveal]`) is scoped under it. Without JS the page renders
@@ -186,7 +197,8 @@ Defined in `globals.css` under `@layer components`:
 | `.flow-line` / `.flow-arrow` | diagram connectors at 34% muted-foreground |
 | `.flow-label` | mono 11px label on background, masks the line it interrupts |
 | `.flow-signal` | modifier: the loop-back edge renders in signal colors |
-| `.flow-dot-*` | 7px signal dot with a 3px background halo, travels an edge once per activation |
+| `.flow-dot-*` | 7px signal dot with a 3px background halo, travels an edge once per activation; the span is an invisible transform-animated wrapper, the dot is `::after` |
+| `.spin-continuous-9` / `-24` | linear infinite `rotate(360deg)`; badge gated on `stage >= 0`, verdict ring always on; both `motion-reduce:animate-none` |
 
 Hover transforms exist only behind `@media (hover: hover) and
 (pointer: fine)`.

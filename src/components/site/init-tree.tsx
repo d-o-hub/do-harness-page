@@ -1,8 +1,8 @@
 'use client'
 
-import { useReducedMotion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { useVisibilityGate } from './use-loop-stage'
+import { usePrefersReducedMotion } from './use-reduced-motion'
 
 /* ----------------------------------------------------------------
    The one-time scaffold, assembled live. The tree lists exactly
@@ -31,7 +31,7 @@ const FILES = [
 const STEP_MS = 240
 
 export function InitTree() {
-  const reduce = useReducedMotion()
+  const reduce = usePrefersReducedMotion()
   const { containerRef, live } = useVisibilityGate()
   // Server render and hydration both start from the full tree; the
   // assembly rewinds to zero rows, exactly once, then holds.

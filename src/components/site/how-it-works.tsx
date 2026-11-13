@@ -1,7 +1,6 @@
 'use client'
 
 import { ArrowUp, ArrowUpRight, RotateCw } from 'lucide-react'
-import { motion } from 'framer-motion'
 import { type ReactNode } from 'react'
 import { Reveal } from './reveal'
 import { InitTree } from './init-tree'
@@ -239,7 +238,7 @@ const EXIT_CODES = (
 
 export function HowItWorks() {
   // 0..3 while animating; -1 when static (reduced motion, pre-mount).
-  const { stage, pin, reduce, containerRef } = useInteractiveLoop(4)
+  const { stage, pin, containerRef } = useInteractiveLoop(4)
 
   return (
     <section
@@ -372,17 +371,15 @@ export function HowItWorks() {
             </div>
             <div className="hidden lg:col-start-2 lg:row-start-2 lg:flex lg:items-center lg:justify-center">
               <div className="flex flex-col items-center gap-2">
-                <motion.div
-                  className="flex size-14 items-center justify-center rounded-full border border-border bg-card"
-                  animate={!reduce && stage >= 0 ? { rotate: 360 } : undefined}
-                  transition={
-                    !reduce && stage >= 0
-                      ? { repeat: Infinity, duration: 9, ease: 'linear' }
-                      : undefined
-                  }
+                {/* CSS rotation: starts with the loop, stops under reduced
+                    motion via the motion-reduce utility. */}
+                <div
+                  className={`flex size-14 items-center justify-center rounded-full border border-border bg-card ${
+                    stage >= 0 ? 'spin-continuous-9' : ''
+                  } motion-reduce:animate-none`}
                 >
                   <RotateCw className="size-5 text-signal" aria-hidden="true" />
-                </motion.div>
+                </div>
                 <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
                   the loop
                 </span>

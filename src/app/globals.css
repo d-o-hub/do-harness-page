@@ -294,71 +294,109 @@
 
   /* Traveling signal dot for the active edge. It mounts only while
      the loop state machine marks that edge active, so reduced-motion
-     users never see it move; the media query hides it entirely. */
+     users never see it move; the media query hides it entirely.
+
+     The span itself is an invisible positioning wrapper animated with
+     transform (compositor-only); the visible dot is its ::after. The
+     wrapper is sized to track minus one dot diameter, so translating
+     the wrapper by 100% of its own width reproduces the old
+     left: calc(100% - 8px) endpoint exactly — no layout properties
+     animate. */
   .flow-dot {
+    position: absolute;
+    z-index: 1;
+  }
+  .flow-dot::after {
+    content: '';
     position: absolute;
     width: 7px;
     height: 7px;
     border-radius: 9999px;
     background: var(--signal);
     box-shadow: 0 0 0 3px var(--background);
-    z-index: 1;
   }
   .flow-dot-x {
     top: 50%;
     margin-top: -3.5px;
+    left: 0;
+    width: calc(100% - 8px);
+    height: 0;
     animation: flow-travel-x 1.4s cubic-bezier(0.23, 1, 0.32, 1) 0.25s both;
   }
   .flow-dot-x-rev {
     top: 50%;
     margin-top: -3.5px;
+    left: 0;
+    width: calc(100% - 8px);
+    height: 0;
     animation: flow-travel-x-rev 1.4s cubic-bezier(0.23, 1, 0.32, 1) 0.25s both;
   }
   .flow-dot-y {
     left: 50%;
     margin-left: -3.5px;
+    top: 0;
+    width: 0;
+    height: calc(100% - 8px);
     animation: flow-travel-y 1.4s cubic-bezier(0.23, 1, 0.32, 1) 0.25s both;
   }
   .flow-dot-y-rev {
     left: 50%;
     margin-left: -3.5px;
+    top: 0;
+    width: 0;
+    height: calc(100% - 8px);
     animation: flow-travel-y-rev 1.4s cubic-bezier(0.23, 1, 0.32, 1) 0.25s both;
   }
   @keyframes flow-travel-x {
     from {
-      left: 0;
+      transform: translateX(0);
     }
     to {
-      left: calc(100% - 8px);
+      transform: translateX(100%);
     }
   }
   @keyframes flow-travel-x-rev {
     from {
-      left: calc(100% - 8px);
+      transform: translateX(100%);
     }
     to {
-      left: 0;
+      transform: translateX(0);
     }
   }
   @keyframes flow-travel-y {
     from {
-      top: 0;
+      transform: translateY(0);
     }
     to {
-      top: calc(100% - 8px);
+      transform: translateY(100%);
     }
   }
   @keyframes flow-travel-y-rev {
     from {
-      top: calc(100% - 8px);
+      transform: translateY(100%);
     }
     to {
-      top: 0;
+      transform: translateY(0);
     }
   }
   @media (prefers-reduced-motion: reduce) {
     .flow-dot {
       display: none;
     }
+  }
+
+  /* Continuous linear rotation (framer replacement): the loop badge in
+     how-it-works and the loop panel (9s) and the CTA verdict ring
+     (24s). Gate + reduced-motion stop via the motion-reduce utility. */
+  @keyframes spin-continuous {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .spin-continuous-9 {
+    animation: spin-continuous 9s linear infinite;
+  }
+  .spin-continuous-24 {
+    animation: spin-continuous 24s linear infinite;
   }
 }

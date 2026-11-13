@@ -1,8 +1,8 @@
 'use client'
 
-import { useReducedMotion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { useVisibilityGate } from './use-loop-stage'
+import { usePrefersReducedMotion } from './use-reduced-motion'
 
 /* ----------------------------------------------------------------
    What a RED actually looks like. A scripted terminal replays the
@@ -97,7 +97,7 @@ function TerminalLine({ text, tone }: { text: string; tone: Tone }) {
 }
 
 export function RedTerminal() {
-  const reduce = useReducedMotion()
+  const reduce = usePrefersReducedMotion()
   const { containerRef, live } = useVisibilityGate()
   // Server render and hydration both start from the completed
   // transcript; the replay then rewinds to line 1, exactly once.

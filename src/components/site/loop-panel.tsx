@@ -1,6 +1,5 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { RotateCw } from 'lucide-react'
 import { RESUME_MS, useInteractiveLoop } from './use-loop-stage'
 
@@ -138,7 +137,7 @@ function EdgeY({
 }
 
 export function LoopPanel() {
-  const { stage, pin, reduce, containerRef } = useInteractiveLoop(4)
+  const { stage, pin, containerRef } = useInteractiveLoop(4)
   const caption = stage >= 0 ? CAPTIONS[stage] : IDLE_CAPTION
 
   return (
@@ -161,17 +160,15 @@ export function LoopPanel() {
           <EdgeY reverse active={stage === 3} />
         </div>
         <div className="flex items-center justify-center">
-          <motion.div
-            className="flex size-10 items-center justify-center rounded-full border border-border bg-background"
-            animate={!reduce && stage >= 0 ? { rotate: 360 } : undefined}
-            transition={
-              !reduce && stage >= 0
-                ? { repeat: Infinity, duration: 9, ease: 'linear' }
-                : undefined
-            }
+          {/* CSS rotation: starts with the loop, stops under reduced
+              motion via the motion-reduce utility. */}
+          <div
+            className={`flex size-10 items-center justify-center rounded-full border border-border bg-background ${
+              stage >= 0 ? 'spin-continuous-9' : ''
+            } motion-reduce:animate-none`}
           >
             <RotateCw className="size-4 text-signal" aria-hidden="true" />
-          </motion.div>
+          </div>
         </div>
         <div className="flex min-h-14 justify-center py-1">
           <EdgeY active={stage === 1} />

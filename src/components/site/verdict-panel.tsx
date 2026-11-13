@@ -1,28 +1,21 @@
-'use client'
-
-import { motion, useReducedMotion } from 'framer-motion'
 import { Check } from 'lucide-react'
 
 /* ----------------------------------------------------------------
    CTA verdict panel: the moment verify returns. A slowly rotating
    dashed ring around a green check, the command above, its exit
-   code below. Static under prefers-reduced-motion (the ring stops).
+   code below. The rotation is a CSS keyframe; reduced motion stops
+   it via the motion-reduce utility, so no JS flag is needed and the
+   panel stays a server component.
 ----------------------------------------------------------------- */
 
 export function VerdictPanel() {
-  const reduce = useReducedMotion()
-
   return (
     <div className="flex aspect-[16/10] w-full flex-col items-center justify-center gap-6 rounded-xl border border-border bg-card p-8">
       <div className="relative flex size-24 items-center justify-center">
-        <motion.svg
+        <svg
           viewBox="0 0 100 100"
-          className="absolute inset-0 size-full text-signal"
+          className="absolute inset-0 size-full text-signal spin-continuous-24 motion-reduce:animate-none"
           aria-hidden="true"
-          animate={reduce ? undefined : { rotate: 360 }}
-          transition={
-            reduce ? undefined : { repeat: Infinity, duration: 24, ease: 'linear' }
-          }
         >
           <circle
             cx="50"
@@ -35,7 +28,7 @@ export function VerdictPanel() {
             strokeDasharray="10 14"
             strokeLinecap="round"
           />
-        </motion.svg>
+        </svg>
         <span className="flex size-12 items-center justify-center rounded-full bg-signal-tint">
           <Check className="size-6 text-signal-ink" strokeWidth={2.5} aria-hidden="true" />
         </span>

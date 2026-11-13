@@ -1,9 +1,9 @@
 'use client'
 
 import { Check } from 'lucide-react'
-import { useReducedMotion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { useVisibilityGate } from './use-loop-stage'
+import { usePrefersReducedMotion } from './use-reduced-motion'
 
 /* ----------------------------------------------------------------
    Live sensor suite: the five sensors the packs select run in
@@ -21,7 +21,7 @@ const TICKS_PER_SENSOR = 2 // one tick running, one tick settled
 const ALL_PASS_AT = SENSORS.length * TICKS_PER_SENSOR // 10
 
 export function SensorCell() {
-  const reduce = useReducedMotion()
+  const reduce = usePrefersReducedMotion()
   const { containerRef, live } = useVisibilityGate()
   // Server render and hydration both start from the verdict; the
   // suite rewinds to tick 0, runs once, holds on GREEN.
