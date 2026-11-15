@@ -81,7 +81,7 @@ export default function RootLayout({
         />
         <ThemeProvider>{children}</ThemeProvider>
       {/* impeccable-live-start */}
-<script src="http://localhost:8400/live.js?token=d27f6f77-6f13-4cc8-8e42-696062b864bd"></script>
+<script src="http://localhost:8400/live.js?token=353a01be-8df6-45a4-ac61-697710230761"></script>
 {/* impeccable-live-end */}
 </body>
     </html>

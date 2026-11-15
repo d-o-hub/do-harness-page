@@ -1,0 +1,161 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" as="image" imageSrcSet="/_next/image?url=%2Fharness-hero.png&amp;w=256&amp;q=75 256w, /_next/image?url=%2Fharness-hero.png&amp;w=384&amp;q=75 384w, /_next/image?url=%2Fharness-hero.png&amp;w=640&amp;q=75 640w, /_next/image?url=%2Fharness-hero.png&amp;w=750&amp;q=75 750w, /_next/image?url=%2Fharness-hero.png&amp;w=828&amp;q=75 828w, /_next/image?url=%2Fharness-hero.png&amp;w=1080&amp;q=75 1080w, /_next/image?url=%2Fharness-hero.png&amp;w=1200&amp;q=75 1200w, /_next/image?url=%2Fharness-hero.png&amp;w=1920&amp;q=75 1920w, /_next/image?url=%2Fharness-hero.png&amp;w=2048&amp;q=75 2048w, /_next/image?url=%2Fharness-hero.png&amp;w=3840&amp;q=75 3840w" imageSizes="(min-width: 1024px) 38vw, 100vw"/><link rel="stylesheet" href="/_next/static/chunks/%5Broot-of-the-server%5D__87b9e018._.css" data-precedence="next_static/chunks/[root-of-the-server]__87b9e018._.css"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/%5Bturbopack%5D_browser_dev_hmr-client_hmr-client_ts_956a0d3a._.js"/><script src="/_next/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js" async=""></script><script src="/_next/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_9212ccad._.js" async=""></script><script src="/_next/static/chunks/node_modules_next_dist_compiled_next-devtools_index_1dd7fb59.js" async=""></script><script src="/_next/static/chunks/node_modules_next_dist_compiled_a0e4c7b4._.js" async=""></script><script src="/_next/static/chunks/node_modules_next_dist_client_17643121._.js" async=""></script><script src="/_next/static/chunks/node_modules_next_dist_f3530cac._.js" async=""></script><script src="/_next/static/chunks/node_modules_%40swc_helpers_cjs_d80fb378._.js" async=""></script><script src="/_next/static/chunks/_a0ff3932._.js" async=""></script><script src="/_next/static/chunks/turbopack-_23a915ee._.js" async=""></script><script src="/_next/static/chunks/node_modules_next_dist_be32b49c._.js" async=""></script><script src="/_next/static/chunks/src_app_icon_svg_mjs_4169252f._.js" async=""></script><script src="/_next/static/chunks/_1b555f8a._.js" async=""></script><script src="/_next/static/chunks/src_app_layout_tsx_1cf6b850._.js" async=""></script><script src="/_next/static/chunks/node_modules_next_dist_client_components_builtin_global-error_1cf6b850.js" async=""></script><script src="/_next/static/chunks/node_modules_865bed0c._.js" async=""></script><script src="/_next/static/chunks/src_components_site_6f58c005._.js" async=""></script><script src="/_next/static/chunks/src_app_page_tsx_ba3759e6._.js" async=""></script><meta name="next-size-adjust" content=""/><meta name="theme-color" media="(prefers-color-scheme: light)" content="#f8f9f5"/><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#151b16"/><title>do-harness: agents that prove their work</title><meta name="description" content="A compiled agent-execution harness CLI. Feedforward guides plus feedback sensors that agents and CI must pass before code ships."/><meta name="author" content="d-o-hub contributors"/><meta name="keywords" content="do-harness,AI agents,verification,CI,developer tools,Rust CLI"/><meta property="og:title" content="do-harness: agents that prove their work"/><meta property="og:description" content="Feedforward guides plus feedback sensors that agents and CI must pass."/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="do-harness: agents that prove their work"/><meta name="twitter:description" content="Feedforward guides plus feedback sensors that agents and CI must pass."/><link rel="icon" href="/icon.svg?icon.5cdfcc0e.svg" sizes="any" type="image/svg+xml"/><script src="/_next/static/chunks/node_modules_next_dist_build_polyfills_polyfill-nomodule.js" noModule=""></script></head><body class="space_grotesk_34749212-module__hGGw_q__variable jetbrains_mono_dc1b5615-module__WLt27q__variable font-sans"><div hidden=""><!--$--><!--/$--></div><script>((e, i, s, u, m, a, l, h)=>{
+    let d = document.documentElement, w = [
+        "light",
+        "dark"
+    ];
+    function p(n) {
+        (Array.isArray(e) ? e : [
+            e
+        ]).forEach((y)=>{
+            let k = y === "class", S = k && a ? m.map((f)=>a[f] || f) : m;
+            k ? (d.classList.remove(...S), d.classList.add(a && a[n] ? a[n] : n)) : d.setAttribute(y, n);
+        }), R(n);
+    }
+    function R(n) {
+        h && w.includes(n) && (d.style.colorScheme = n);
+    }
+    function c() {
+        return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    if (u) p(u);
+    else try {
+        let n = localStorage.getItem(i) || s, y = l && n === "system" ? c() : n;
+        p(y);
+    } catch (n) {}
+<!-- impeccable-variants-start 581befb1 -->
+<div data-impeccable-variants="581befb1" data-impeccable-variant-count="3" style="display: contents">
+  <!-- Original -->
+  <div data-impeccable-variant="original">
+    <div class="mt-8 flex flex-wrap items-center gap-3"><a href="https://github.com/d-o-hub/do-harness/blob/main/docs/adoption.md" target="_blank" rel="noopener noreferrer" class="btn btn-primary" style="">Read the adoption guide<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right size-4" aria-hidden="true" style=""><path d="M7 7h10v10" style=""></path><path d="M7 17 17 7" style=""></path></svg></a><div class="cmd flex items-center gap-1 py-1.5 pl-3.5 pr-1.5" data-copy-row="true" style=""><code data-copy-text="true" class="whitespace-nowrap text-[13px] text-foreground" style="">npx do-harness init</code><button type="button" class="relative inline-flex h-11 shrink-0 items-center gap-1.5 rounded-md border border-transparent px-3 font-mono text-[13px] text-muted-foreground transition-colors duration-150 hover:text-foreground" aria-label="Copy command" style=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy size-4" aria-hidden="true" style=""><rect width="14" height="14" x="8" y="8" rx="2" ry="2" style=""></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" style=""></path></svg><span aria-hidden="true" style="">Copy</span><span role="status" aria-live="polite" class="sr-only" style=""></span></button></div></div>
+  </div>
+  <!-- Variants: insert below this line -->
+<style data-impeccable-css="581befb1">
+  /* V1 - hierarchy swap: command primary, guide ghost */
+  @scope ([data-impeccable-variant="1"]) {
+    :scope > .v1-root .v1-cmd {
+      background: var(--card);
+      border-color: color-mix(in oklab, var(--foreground) calc(16% + var(--p-command-emphasis, 0.55) * 24%), var(--border));
+      box-shadow:
+        0 1px 2px oklch(0 0 0 / calc(var(--p-command-emphasis, 0.55) * 0.05)),
+        0 6px 16px oklch(0 0 0 / calc(var(--p-command-emphasis, 0.55) * 0.08));
+    }
+    :scope > .v1-root .v1-copy {
+      background: var(--primary);
+      color: var(--primary-foreground);
+      transition: background-color 150ms var(--ease-out-strong, ease-out);
+    }
+    :scope > .v1-root[data-p-guide-style="button"] .v1-guide {
+      height: 2.75rem;
+      padding: 0 1.25rem;
+      border-radius: calc(var(--radius) - 2px);
+      background: var(--background);
+      color: var(--foreground);
+      border: 1px solid var(--border);
+      font-size: 0.9375rem;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      :scope > .v1-root .v1-copy:hover {
+        background: color-mix(in oklab, var(--primary) 86%, var(--background));
+      }
+      :scope > .v1-root .v1-guide:hover { color: var(--foreground); }
+      :scope > .v1-root[data-p-guide-style="button"] .v1-guide:hover {
+        background: var(--muted);
+        border-color: color-mix(in oklab, var(--foreground) 26%, var(--border));
+      }
+    }
+  }
+
+  /* V2 - stacked deck: full-width command bar, guide row below */
+  @scope ([data-impeccable-variant="2"]) {
+    :scope > .v2-root .v2-cmd {
+      background: var(--card);
+      border-color: color-mix(in oklab, var(--foreground) 30%, var(--border));
+      box-shadow:
+        0 1px 2px oklch(0 0 0 / 0.05),
+        0 6px 16px oklch(0 0 0 / 0.07);
+    }
+    :scope > .v2-root .v2-copy {
+      background: var(--primary);
+      color: var(--primary-foreground);
+      transition: background-color 150ms var(--ease-out-strong, ease-out);
+    }
+    :scope > .v2-root[data-p-command-size="lg"] .v2-cmd {
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+    }
+    :scope > .v2-root[data-p-command-size="lg"] .v2-code { font-size: 0.9375rem; }
+    :scope > .v2-root .v2-guide { text-underline-offset: 4px; }
+    @media (hover: hover) and (pointer: fine) {
+      :scope > .v2-root .v2-copy:hover {
+        background: color-mix(in oklab, var(--primary) 86%, var(--background));
+      }
+      :scope > .v2-root .v2-guide:hover {
+        color: var(--foreground);
+        text-decoration: underline;
+      }
+    }
+  }
+
+  /* V3 - instrument strip: one segmented surface */
+  @scope ([data-impeccable-variant="3"]) {
+    :scope > .v3-root {
+      background: var(--card);
+      border: 1px solid var(--border);
+      box-shadow:
+        0 1px 2px oklch(0 0 0 / 0.04),
+        0 6px 16px oklch(0 0 0 / 0.06);
+    }
+    :scope > .v3-root .v3-cmd {
+      background: transparent;
+      border: none;
+      border-radius: 0;
+    }
+    :scope > .v3-root .v3-copy {
+      background: var(--primary);
+      color: var(--primary-foreground);
+      transition: background-color 150ms var(--ease-out-strong, ease-out);
+    }
+    :scope > .v3-root .v3-guide {
+      color: color-mix(in oklab, var(--muted-foreground) calc(100% - var(--p-guide-tone, 0.35) * 100%), var(--foreground));
+      transition: color 150ms var(--ease-out-strong, ease-out), background-color 150ms var(--ease-out-strong, ease-out);
+    }
+    :scope > .v3-root[data-p-divider="hidden"] .v3-divider { display: none; }
+    @media (hover: hover) and (pointer: fine) {
+      :scope > .v3-root .v3-copy:hover {
+        background: color-mix(in oklab, var(--primary) 86%, var(--background));
+      }
+      :scope > .v3-root .v3-guide:hover { background: var(--muted); }
+    }
+  }
+</style>
+<div data-impeccable-variant="1" data-impeccable-params='[{"id":"command-emphasis","kind":"range","min":0,"max":1,"step":0.05,"default":0.55,"label":"Command emphasis"},{"id":"guide-style","kind":"steps","default":"ghost","label":"Guide style","options":[{"value":"ghost","label":"Ghost link"},{"value":"button","label":"Quiet button"}]}]'>
+  <div class="v1-root mt-8 flex flex-wrap items-center gap-3">
+    <div class="cmd v1-cmd flex items-center gap-2 py-2 pl-4 pr-2" data-copy-row="true">
+      <code data-copy-text="true" class="whitespace-nowrap font-mono text-sm font-medium text-foreground">npx do-harness init</code>
+      <button type="button" class="v1-copy relative inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md px-3 font-mono text-[13px] font-medium" aria-label="Copy command"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span aria-hidden="true">Copy</span><span role="status" aria-live="polite" class="sr-only"></span></button>
+    </div>
+    <a href="https://github.com/d-o-hub/do-harness/blob/main/docs/adoption.md" target="_blank" rel="noopener noreferrer" class="v1-guide inline-flex items-center gap-1 text-[15px] font-medium text-muted-foreground transition-colors duration-150">Read the adoption guide <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a>
+  </div>
+</div>
+<div data-impeccable-variant="2" style="display: none" data-impeccable-params='[{"id":"command-size","kind":"steps","default":"md","label":"Command size","options":[{"value":"md","label":"Medium"},{"value":"lg","label":"Large"}]},{"id":"stack-gap","kind":"range","min":8,"max":24,"step":2,"default":14,"label":"Stack gap"}]'>
+  <div class="v2-root mt-8 flex w-full flex-col" style="gap: var(--p-stack-gap, 14px)">
+    <div class="cmd v2-cmd flex w-full items-center gap-3 py-2.5 pl-4 pr-2.5" data-copy-row="true">
+      <span class="select-none font-mono text-[13px] text-muted-foreground" aria-hidden="true">$</span>
+      <code data-copy-text="true" class="v2-code min-w-0 flex-1 truncate font-mono text-sm font-medium text-foreground">npx do-harness init</code>
+      <button type="button" class="v2-copy relative inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md px-3.5 font-mono text-[13px] font-medium" aria-label="Copy command"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span aria-hidden="true">Copy</span><span role="status" aria-live="polite" class="sr-only"></span></button>
+    </div>
+    <a href="https://github.com/d-o-hub/do-harness/blob/main/docs/adoption.md" target="_blank" rel="noopener noreferrer" class="v2-guide inline-flex w-fit items-center gap-1 text-[15px] font-medium text-muted-foreground transition-colors duration-150">Read the adoption guide <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a>
+  </div>
+</div>
+<div data-impeccable-variant="3" style="display: none" data-impeccable-params='[{"id":"guide-tone","kind":"range","min":0,"max":1,"step":0.05,"default":0.35,"label":"Guide tone"},{"id":"divider","kind":"steps","default":"shown","label":"Divider","options":[{"value":"shown","label":"Shown"},{"value":"hidden","label":"Hidden"}]}]'>
+  <div class="v3-root mt-8 inline-flex items-stretch overflow-hidden rounded-[10px]">
+    <div class="cmd v3-cmd flex items-center gap-2.5 py-2.5 pl-4 pr-3" data-copy-row="true">
+      <code data-copy-text="true" class="whitespace-nowrap font-mono text-sm font-medium text-foreground">npx do-harness init</code>
+      <button type="button" class="v3-copy relative inline-flex h-8 shrink-0 items-center gap-1.5 rounded-md px-2.5 font-mono text-xs font-medium" aria-label="Copy command"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg><span aria-hidden="true">Copy</span><span role="status" aria-live="polite" class="sr-only"></span></button>
+    </div>
+    <div class="v3-divider w-px shrink-0" style="background: var(--border)" aria-hidden="true"></div>
+    <a href="https://github.com/d-o-hub/do-harness/blob/main/docs/adoption.md" target="_blank" rel="noopener noreferrer" class="v3-guide inline-flex items-center gap-1.5 whitespace-nowrap px-4 font-mono text-[13px] font-medium">Adoption guide <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="size-4" aria-hidden="true"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a>
+  </div>
+</div>
+</div>
+<!-- impeccable-variants-end 581befb1 -->
