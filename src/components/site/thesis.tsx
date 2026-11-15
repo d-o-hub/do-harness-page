@@ -41,7 +41,10 @@ export function Thesis() {
         </Reveal>
 
         <Reveal delay={0.1} className="lg:col-span-4 lg:col-start-9">
-          <div className="rounded-xl border border-border bg-card p-6">
+          <div
+            id="exit-codes"
+            className="scroll-mt-24 rounded-xl border border-border bg-card p-6"
+          >
             <h3 className="text-sm font-medium">Exit codes</h3>
             <dl className="mt-4 divide-y divide-border">
               {EXIT_CODES.map((e) => (

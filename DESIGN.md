@@ -19,9 +19,10 @@ component classes    .btn, .chip, .cmd, .flow-* (defined in globals.css)
   next-themes (system default plus manual toggle). The `@custom-variant
   dark` line makes `dark:` utilities work with that class.
 - Components never hardcode colors. The only sanctioned hex escapes
-  are the two `themeColor` values in `layout.tsx` (browser chrome
-  approximations of the backgrounds) and the OKLCH mirror inside
-  `scripts/og.html` (a static image source cannot read CSS variables).
+  are the two `themeColor` values in `layout.tsx` (exact sRGB
+  conversions of the two backgrounds, so browser chrome matches the
+  page) and the OKLCH mirror inside `scripts/og.html` (a static image
+  source cannot read CSS variables).
 
 ## 2. Color tokens
 
@@ -192,7 +193,7 @@ Defined in `globals.css` under `@layer components`:
 | `.btn-primary` | ink fill, paper text; hover mixes 86% primary with background (hover-capable pointers only) |
 | `.btn-secondary` | paper fill, hairline border; hover: muted fill, border darkened 26% toward foreground |
 | `.icon-btn` | 44px square, radius 10px, muted hover wash |
-| `.chip` | 28px pill, hairline border, mono 12px |
+| `.chip` | 28px pill, hairline border, mono 12px. Every chip instance is `h-7`; there is no 24px chip variant |
 | `.chip-tinted` | signal-tint fill, signal-ink text, no border |
 | `.cmd` | mono 13px command row, muted fill, hairline border, radius 8px |
 | `.flow-line` / `.flow-arrow` | diagram connectors at 34% muted-foreground |
@@ -226,8 +227,10 @@ Interaction feedback beyond the classes:
 
 Every visual change is verified in both themes before it ships; a
 token edit that only looks right in light is not done. `layout.tsx`
-declares `themeColor` per scheme: `#f8f9f5` light, `#151b16` dark
-(approximations of the two backgrounds). `scripts/og.html` hardcodes
+declares `themeColor` per scheme: `#f8faf7` light, `#0c100d` dark —
+the exact sRGB conversions of `oklch(0.982 0.004 130)` and
+`oklch(0.168 0.01 155)`, so the browser chrome tint equals the page
+background in both schemes. `scripts/og.html` hardcodes
 the exact light-theme OKLCH values, so the social card stays on-palette.
 
 ## 11. Extending the tokens

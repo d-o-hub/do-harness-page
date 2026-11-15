@@ -13,8 +13,9 @@ const CELLS = [
           <span className="chip">generic</span>
         </div>
         <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
-          The web pack adds axe accessibility, console noise, performance,
-          visual diff, and i18n sensors on top of Playwright and Lighthouse.
+          Each pack selects the sensors that fit the stack. The web pack adds
+          axe accessibility, console noise, performance, visual diff, and i18n
+          sensors on top of Playwright and Lighthouse.
         </p>
       </>
     ),
@@ -27,45 +28,30 @@ const CELLS = [
         <code className="font-mono text-[13px] text-foreground">pre-commit</code>,{' '}
         <code className="font-mono text-[13px] text-foreground">commit-msg</code>,{' '}
         <code className="font-mono text-[13px] text-foreground">pre-push</code>.
-        The fast set on commit, the full suite on push.
+        A fast sensor set on commit, the full suite on push.
       </p>
     ),
     className: 'md:col-span-1',
   },
   {
-    title: 'Evidence',
+    title: 'Evidence and metrics',
     body: (
       <p className="text-[15px] leading-relaxed text-muted-foreground">
         <code className="font-mono text-[13px] text-foreground">
           verify --record
         </code>{' '}
-        writes each sensor result into a libSQL store. Workflow events stay
-        append-only, and{' '}
+        writes each sensor result into{' '}
+        <span className="font-mono text-[12.5px] text-foreground">
+          agent_state.db
+        </span>
+        , append-only, and{' '}
         <code className="font-mono text-[13px] text-foreground">
           audit-chain
         </code>{' '}
-        recomputes the hash chain to report the first divergence.
-      </p>
-    ),
-    className: 'md:col-span-2',
-  },
-  {
-    title: 'Skills loop',
-    body: (
-      <p className="text-[15px] leading-relaxed text-muted-foreground">
-        skill-creator scaffolds, eval runs fixtures, overlap flags guidance
-        that duplicates.
-      </p>
-    ),
-    className: 'md:col-span-1',
-  },
-  {
-    title: 'Metrics',
-    body: (
-      <p className="text-[15px] leading-relaxed text-muted-foreground">
+        recomputes the hash chain to report the first divergence.{' '}
         <code className="font-mono text-[13px] text-foreground">dora</code>{' '}
         derives deployment metrics straight from git history, deterministic and
-        read-only.{' '}
+        read-only;{' '}
         <code className="font-mono text-[13px] text-foreground">metrics pr</code>{' '}
         reports time-to-green and pushes per green.
       </p>
@@ -80,7 +66,7 @@ const CELLS = [
         RMF 1.0, the EU AI Act, and SOC 2.
       </p>
     ),
-    className: 'md:col-span-2 bg-signal-tint border-transparent',
+    className: 'md:col-span-1 bg-signal-tint border-transparent',
   },
 ]
 

@@ -66,7 +66,7 @@ export function InitTree() {
         <code className="font-mono text-[13px] text-foreground">
           $ do-harness init
         </code>
-        <span className="chip h-6 text-[11px] text-muted-foreground">
+        <span className="chip h-7 text-[11px] text-muted-foreground">
           one-time
         </span>
         <span className="hidden text-[12.5px] text-muted-foreground md:inline">
