@@ -56,10 +56,15 @@ async function getStars(): Promise<number | null> {
 /**
  * SHA-256 of the exact bytes raw.githubusercontent serves for install.sh —
  * the content `curl | sh` executes. Same source as the pipe, same 1h
- * revalidate as the star count. null on any failure: the row degrades to
- * the read-the-script link instead of showing a stale or invented hash.
+ * revalidate as the star count. fetchedAt (HH:MM UTC) records when the
+ * bytes were hashed, so the row can show the stamp beside the hex. null on
+ * any failure: the row degrades to an explicit "verify after download"
+ * line instead of a stale or invented hash.
  */
-async function getInstallScriptChecksum(): Promise<string | null> {
+async function getInstallScriptChecksum(): Promise<{
+  hash: string
+  fetchedAt: string
+} | null> {
   try {
     const res = await fetch(INSTALL_SCRIPT_URL, {
       next: { revalidate: 3600 },
@@ -67,7 +72,11 @@ async function getInstallScriptChecksum(): Promise<string | null> {
     if (!res.ok) return null
     const body = await res.arrayBuffer()
     const hex = createHash('sha256').update(Buffer.from(body)).digest('hex')
-    return /^[0-9a-f]{64}$/.test(hex) ? hex : null
+    if (!/^[0-9a-f]{64}$/.test(hex)) return null
+    return {
+      hash: hex,
+      fetchedAt: new Date().toISOString().slice(11, 16),
+    }
   } catch {
     return null
   }

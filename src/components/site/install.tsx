@@ -45,7 +45,9 @@ const CI_CMD =
 export function Install({
   scriptChecksum,
 }: {
-  scriptChecksum: string | null
+  scriptChecksum:
+    | { hash: string; fetchedAt: string }
+    | null
 }) {
   return (
     <section
@@ -87,26 +89,48 @@ export function Install({
                         {m.desc}
                       </p>
                     </div>
-                    <div className="cmd mt-3 flex items-center gap-1 py-2 pl-3.5 pr-1.5">
-                      <code className="min-w-0 flex-1 break-words text-foreground">
+                    <div
+                      className="cmd mt-3 flex items-center gap-1 py-2 pl-3.5 pr-1.5"
+                      data-copy-row
+                    >
+                      <code
+                        data-copy-text
+                        className="min-w-0 flex-1 break-words text-foreground"
+                      >
                         {m.cmd}
                       </code>
                       <CopyButton command={m.cmd} label={`Copy ${m.label} command`} />
                     </div>
                     {m.label === 'Shell' && scriptChecksum !== null && (
-                      <div className="mt-2">
+                      <div className="mt-2" data-copy-row>
                         <div className="flex items-center justify-between gap-3">
                           <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-                            install.sh &middot; sha256
+                            install.sh &middot; sha256 &middot; fetched{' '}
+                            {scriptChecksum.fetchedAt} UTC
                           </span>
                           <CopyButton
-                            command={scriptChecksum}
+                            command={scriptChecksum.hash}
                             label="Copy install.sh checksum"
                           />
                         </div>
-                        <code className="mt-1 block break-all font-mono text-[12.5px] leading-relaxed text-foreground">
-                          {scriptChecksum}
+                        <code
+                          data-copy-text
+                          className="mt-1 block break-all font-mono text-[12.5px] leading-relaxed text-foreground"
+                        >
+                          {scriptChecksum.hash}
                         </code>
+                      </div>
+                    )}
+                    {m.label === 'Shell' && scriptChecksum === null && (
+                      <div className="mt-2">
+                        <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+                          install.sh &middot; sha256 unavailable
+                        </span>
+                        <p className="mt-1 font-mono text-[12.5px] leading-relaxed text-muted-foreground">
+                          checksum fetch failed &middot; verify with{' '}
+                          <code className="text-foreground">shasum -a 256</code> after
+                          download
+                        </p>
                       </div>
                     )}
                   </div>

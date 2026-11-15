@@ -329,3 +329,21 @@ Work Log:
 
 Stage Summary:
 - The second critique finds no detector-visible defects and no composition problems; the issues are interaction feedback and reachability. Open queue for the next pass: 1x P1 + 3x P2 + 1x P3, awaiting the user's priority/scope answers.
+
+---
+Task ID: 18
+Agent: main (Z.ai)
+Task: $impeccable harden + $impeccable layout close-out of the second critique - the user chose "Everything" as priority, scope P1+P2 this round, plus the as-of stamp for Riley's checksum nuance.
+
+Work Log:
+- P1 touch targets: how-it-works StageCard badges stay 24px visually but gain `relative after:-inset-2.5 after:rounded-md after:content-['']` hit-slop -> 44x44 hit area, zero visible geometry change (probe: visible 24x24, hit 44x44, after applied). Hero loop nodes were already >44px (px-3 py-2.5), P1 scoped to StageCard only.
+- P2 silent copy failure: CopyButton gains a `failed` state (X icon, "Copy failed", 4s auto-reset). On clipboard block (both async and execCommand paths) it selects the row's `[data-copy-text]` inside `[data-copy-row]` so the user can finish with Ctrl-C/Cmd-C, and announces the fallback through the same polite live region. data-copy-row/text added to all four install method rows, the checksum row, and the CTA cmd row. Live probe: clipboard stubbed to reject -> "Copy failed" shown, selection length 19 = the full command.
+- P2 degraded checksum: page.tsx getInstallScriptChecksum now returns {hash, fetchedAt} (HH:MM UTC at hash time); install.tsx renders "install.sh - sha256 - fetched HH:MM UTC" in the kicker (as-of stamp, user's pick for Riley's nuance) and, on null, an explicit "sha256 unavailable - verify with shasum -a 256 after download" line (12.5px mono, muted, no red/green leak). null branch verified by renderToString under bun (unreachable live while upstream is up - honest probe, scripts/probe-install-states.tsx).
+- P2 mobile install entry: nav icon row gains a persistent "Install" text link (mono 13px, h-11, md:hidden) before the GitHub icon; burger menu remains the full index. Verified in SSR HTML and the 390px crop.
+- React text-node comment markers (<!-- -->) split "fetched HH:MM UTC" in SSR output; probes now strip comments before matching (first run false-failed on this).
+- Verification: gates green (lint 0 / tsc 0 / build 6 routes); verify-ssr FAIL=0 (16 assertions incl. pinned hex); verify-18 FAILS=0 (stamp, nav entry, copy targets, hash cross-check vs live upstream, null-branch render, detector source 0 / desktop 6 / mobile 6 = unchanged documented set, hit-area probe, copy-failure probe); crops: install row light + dark (stamp + live "Copy failed" capture with visible selection), mobile header, how cards pixel-identical.
+- DESIGN.md: touch-target row documents the hit-slop pattern; new Mobile nav row; new interaction-feedback notes (CopyButton three states, install trust row stamp/degraded).
+- Critique snapshot 2026-11-15T18-09-53Z closed (latest exits 2 = none open).
+
+Stage Summary:
+- The second critique's P1 and all three P2s are closed with live probes, and the checksum row now states when its bytes were hashed. Detector set unchanged (6/6 documented). Deferred by scope choice: P3 bento distill + minors (themeColor mismatch, 24px one-time chip, #top anchor, exit-codes anchor).

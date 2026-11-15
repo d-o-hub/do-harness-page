@@ -35,8 +35,8 @@ export function Cta() {
                 aria-hidden="true"
               />
             </a>
-            <div className="cmd flex items-center gap-1 py-1.5 pl-3.5 pr-1.5">
-              <code className="whitespace-nowrap text-[13px] text-foreground">
+            <div className="cmd flex items-center gap-1 py-1.5 pl-3.5 pr-1.5" data-copy-row>
+              <code data-copy-text className="whitespace-nowrap text-[13px] text-foreground">
                 npx do-harness init
               </code>
               <CopyButton command="npx do-harness init" />

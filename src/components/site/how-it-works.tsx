@@ -195,7 +195,7 @@ function StageCard({
           onFocus={onPin}
           aria-label={`Pin stage ${n}: ${title}`}
           aria-pressed={active}
-          className={`flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-md font-mono text-[11px] transition-colors duration-500 ${
+          className={`relative flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-md font-mono text-[11px] transition-colors duration-500 after:absolute after:-inset-2.5 after:rounded-md after:content-[''] ${
             active ? 'bg-signal-tint text-signal-ink' : 'bg-muted text-muted-foreground'
           }`}
         >

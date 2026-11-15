@@ -120,6 +120,12 @@ export function Nav({ stars }: { stars: number | null }) {
 
         <div className="flex items-center gap-1.5">
           <a
+            href="#install"
+            className="inline-flex h-11 items-center px-1 font-mono text-[13px] text-muted-foreground transition-colors duration-150 hover:text-foreground md:hidden"
+          >
+            Install
+          </a>
+          <a
             href={REPO_URL}
             target="_blank"
             rel="noopener noreferrer"

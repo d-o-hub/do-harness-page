@@ -111,7 +111,8 @@ palette carries depth, shadows do not.
 | Grid gutters | `gap-12`, `lg:gap-8` on 12-column grids |
 | Anchor offset | `scroll-mt-24` on every `aria-labelledby` section (clears the sticky nav) |
 | Page frame | `min-h-svh flex flex-col`, footer pushed naturally |
-| Touch targets | 44px minimum (`.btn`, `.icon-btn` are `h-11`) |
+| Touch targets | 44px minimum (`.btn`, `.icon-btn` are `h-11`; the how-it-works stage badges stay 24px visually and reach 44px through an `after:-inset-2.5` hit-slop — no visible geometry change) |
+| Mobile nav | Persistent `Install` text link (mono 13px, `h-11`, `md:hidden`) beside the icons, so the primary action is one tap away without opening the burger |
 
 ## 6. Z-index scale
 
@@ -202,6 +203,17 @@ Defined in `globals.css` under `@layer components`:
 
 Hover transforms exist only behind `@media (hover: hover) and
 (pointer: fine)`.
+
+Interaction feedback beyond the classes:
+
+- **CopyButton** holds three states — `Copy`, `Copied` (1.6s), and `Copy
+  failed` (4s). The failed state selects the row's `[data-copy-text]`
+  content so a clipboard-blocked user can finish with Ctrl-C / Cmd-C, and
+  announces that fallback through the same polite live region.
+- **Install trust row** carries `fetched HH:MM UTC` in its kicker — the
+  moment the server hashed the piped bytes. On fetch failure it renders an
+  explicit `sha256 unavailable` line pointing at `shasum -a 256`, never a
+  stale or invented hash.
 
 ## 9. Base layer
 
