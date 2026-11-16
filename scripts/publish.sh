@@ -6,6 +6,7 @@
 set -u
 cd /home/z/my-project
 
+pkill -f "standalone/server.js" 2>/dev/null || true
 pkill -f "bun server.js" 2>/dev/null || true
 sleep 0.5
 
