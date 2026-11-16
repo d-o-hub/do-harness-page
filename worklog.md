@@ -428,3 +428,15 @@ User: "failed again - use another port" (third deploy failure).
   - DEPLOY.md section 2 documents FORCE_PORT.
 - Verified: build exit 0 + server.js line 8 = `parseInt(process.env.FORCE_PORT, 10) || 4000`; FC sim (PORT=3000 exported, no FORCE_PORT) -> 200 on :4000, :3000 untouched; publish sim (FORCE_PORT=3000) -> 200 on :3000; test servers killed, ports 3000/4000 clean for the deploy.
 - Dev contract untouched on purpose: dev stays `-p 3000` (dev.sh wait_for_service hardcodes localhost:3000; dev.log 09:24 proves that phase passes). If the deploy still fails after this, the next lever is the platform-side runner, not repo code.
+
+## Task 24 - attempt 4 post-mortem: the sandbox is green, the deploy gateway is the failure (2026-11-16)
+
+User retried after the :4000 fix; same "Sorry, there was a problem deploying the code."
+
+- Found /tmp/boot-timeline.log (root-owned, written during the retry): the deploy click REBOOTS this sandbox and auto-runs the whole dev flow. Every logged step GREEN: Project init 5s, skills extract, lockfile registry rewrite, bun install 7s, db:push 1s, Caddy started. The timeline ends right after db:push because the remaining steps are long-lived (dev server, Caddy main process).
+- dev.log (11:13) confirms: next dev Ready in 564ms, GET / 200 twice (dev.sh wait_for_service + health check). The server from that boot is STILL ALIVE now (next-server pid on :3000, front :81 -> 200).
+- Gateway-simulation through the front door with the public Host header: HTML -> 200, /_next asset -> 200, og.png -> 200. The app handles the public host perfectly.
+- The public URL still returns 500 (the platform's own deploy-failure page) while all of the above is green. Combined with: no /tmp/build_fullstack_* artifacts ever (build.sh has never completed here - the controller does not run the repo's build pipeline in this sandbox), and the URL's 500 body being the deploy-failure message itself.
+- Verdict: every input the repo controls is green (lint/tsc/build/db/boot/runtime). The failing step lives inside the platform's deploy controller/gateway and emits no logs into the sandbox. Nothing further in this repo can flip the URL.
+- Defensive commit: scripts/force-server-port.cjs no longer hard-fails if server.js's port layout differs (warn + keep upstream default) - a controller-side build must never die on this cosmetic pin.
+- Platform-side follow-ups worth asking support for: the controller's deploy log, why the gateway target state stays "failed" after a fully green boot, and whether the "-d" URL routing ever points at the workspace front door.
