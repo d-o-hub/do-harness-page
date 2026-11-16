@@ -38,6 +38,10 @@
   ],
   "exclude": [
     "node_modules",
-    "skills"
+    "skills",
+    "src/components/ui",
+    "src/hooks/use-toast.ts",
+    "src/lib/db.ts",
+    "examples"
   ]
 }
