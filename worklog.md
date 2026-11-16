@@ -440,3 +440,11 @@ User retried after the :4000 fix; same "Sorry, there was a problem deploying the
 - Verdict: every input the repo controls is green (lint/tsc/build/db/boot/runtime). The failing step lives inside the platform's deploy controller/gateway and emits no logs into the sandbox. Nothing further in this repo can flip the URL.
 - Defensive commit: scripts/force-server-port.cjs no longer hard-fails if server.js's port layout differs (warn + keep upstream default) - a controller-side build must never die on this cosmetic pin.
 - Platform-side follow-ups worth asking support for: the controller's deploy log, why the gateway target state stays "failed" after a fully green boot, and whether the "-d" URL routing ever points at the workspace front door.
+
+## Task 25 - "next": deploy exonerated, live app certified (2026-11-16)
+
+- Door probe: no alternate public URL exists (preview-*/no-suffix/-p variants -> 404/410); every path on the -d gateway 500s (og.png, robots.txt, sitemap.xml, cache-busted /) - not a stale cache, the deploy target is genuinely dead, controller-side.
+- Package exonerated: simulated build.sh package = 23MB tar.gz / 75MB raw (heaviest: @img 33M, typescript 20M, next 18M) - well within FC norms. API route is dead "Hello, world!" scaffold; prisma is not traced into the standalone.
+- Certification evidence of the running app (boot's dev server on :3000, front door :81, gateway-style Host header): download/live-cert-desktop.png (1440px) and download/live-cert-mobile.png (390px) - full page renders, scroll reveals fire, accepted variant 2 CTA (full-width command deck + ink Copy + adoption-guide secondary) in place.
+- Note: next dev (Turbopack) wipes .next/standalone; the FC build regenerates it. agent-browser full-page captures need explicit scrolling first or scroll-reveal sections stay blank.
+- Final state: tree clean at HEAD; app serving 200 on :3000/:81. Remaining moves are platform/user-side: retry button, support deploy logs, or deploy outside the platform per DEPLOY.md (GitHub push needs a remote+credentials the sandbox cannot hold; NEXT_PUBLIC_SITE_URL is the deploy-time variable).
