@@ -217,6 +217,26 @@
     border: 1px solid var(--border);
     border-radius: calc(var(--radius) - 4px);
   }
+  /* CTA command deck (live event 581befb1, variant 2 accepted): card
+     surface, firmer border, soft lift so the command reads as the
+     section's primary object instead of a quiet chip. */
+  .cmd-deck {
+    background: var(--card);
+    border-color: color-mix(in oklab, var(--foreground) 30%, var(--border));
+    box-shadow:
+      0 1px 2px oklch(0 0 0 / 0.05),
+      0 6px 16px oklch(0 0 0 / 0.07);
+  }
+  /* Ink-filled copy affordance for the deck (was a ghost button). */
+  .copy-ink {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .copy-ink:hover {
+      background: color-mix(in oklab, var(--primary) 86%, var(--background));
+    }
+  }
 
   /* Diagram connectors (how-it-works). Lines and arrowheads track both
      themes via the tokens; labels mask the line with the section bg. */

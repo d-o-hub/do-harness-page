@@ -38,9 +38,12 @@ async function copyText(text: string): Promise<boolean> {
 export function CopyButton({
   command,
   label = 'Copy command',
+  variant = 'default',
 }: {
   command: string
   label?: string
+  /** 'ink' fills the affordance with --primary for command-deck rows. */
+  variant?: 'default' | 'ink'
 }) {
   const [state, setState] = useState<'idle' | 'done' | 'failed'>('idle')
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -91,11 +94,21 @@ export function CopyButton({
           ? 'Clipboard blocked — command text selected, press Ctrl-C / Cmd-C'
           : undefined
       }
-      className="relative inline-flex h-11 shrink-0 items-center gap-1.5 rounded-md border border-transparent px-3 font-mono text-[13px] text-muted-foreground transition-colors duration-150 hover:text-foreground"
+      className={
+        variant === 'ink'
+          ? 'copy-ink relative inline-flex h-9 shrink-0 items-center gap-1.5 rounded-md px-3.5 font-mono text-[13px] font-medium transition-colors duration-150'
+          : 'relative inline-flex h-11 shrink-0 items-center gap-1.5 rounded-md border border-transparent px-3 font-mono text-[13px] text-muted-foreground transition-colors duration-150 hover:text-foreground'
+      }
       aria-label={state === 'failed' ? `${label} — clipboard blocked` : label}
     >
       {state === 'done' ? (
-        <Check className="size-4 text-signal-ink" strokeWidth={2} aria-hidden="true" />
+        <Check
+          className={
+            variant === 'ink' ? 'size-4' : 'size-4 text-signal-ink'
+          }
+          strokeWidth={2}
+          aria-hidden="true"
+        />
       ) : state === 'failed' ? (
         <X className="size-4" strokeWidth={2} aria-hidden="true" />
       ) : (
