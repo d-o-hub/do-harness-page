@@ -6,10 +6,10 @@
 set -u
 cd /home/z/my-project
 
-pkill -f "standalone/server.js" 2>/dev/null || true
+pkill -f "bun server.js" 2>/dev/null || true
 sleep 0.5
 
-setsid nohup env NODE_ENV=production bun .next/standalone/server.js </dev/null > /tmp/publish-server.log 2>&1 &
+setsid nohup env NODE_ENV=production FORCE_PORT=3000 bun .next/standalone/server.js </dev/null > /tmp/publish-server.log 2>&1 &
 for i in $(seq 1 20); do
   curl -s -o /dev/null --max-time 2 http://localhost:3000 && break
   sleep 0.5

@@ -412,3 +412,19 @@ Work Log:
 
 Stage Summary:
 - The recurring deploy failure is fixed at the root: the pipeline's mandatory db:push step has its script back, and the full platform build path (build.sh + database-runtime-build.sh + packaged server boot) has been proven green with the platform's own tooling. Deploy is now expected to pass on retry; if it fails again, capture the driver-side log before touching anything. Commits: 28d2d32 (the contract restore) on top of Task 21's accept.
+
+## Task 23 - deploy port defense: move the FC runtime off :3000 (2026-11-16)
+
+User: "failed again - use another port" (third deploy failure).
+
+- Evidence chain: dev.log (09:24) proves the deploy's dev phase PASSED on :3000 - bound, Ready in 681ms, repeated `GET / 200` from the deploy health checker, then SIGTERM; it also caught the overnight node_modules prune (`Can't resolve 'tailwindcss-animate'` warnings, pages still 200). The 09:50 attempt re-synced + ran `bun install` (bun.lock touched, node_modules restored to 321 pkgs) and touched `.next` (build), but no dev.log write, no server.log, and no `/tmp/build_fullstack_*` dir - so nothing ever started a server that attempt.
+- Locally everything is green: `bun run build` exit 0 twice (7 routes, standalone produced), `bun run db:push` exit 0, all deps present.
+- Remaining suspect = the FC runtime: start.sh does `export PORT="${PORT:-3000}" && bun server.js` and aborts the deploy if the server dies within 1s. If the runtime environment's own agent already holds :3000 -> EADDRINUSE -> "Next.js server failed to start" -> Caddy :81 fronts a dead upstream -> FC 120s health timeout -> "Sorry, there was a problem deploying the code." Invisible from the sandbox, consistent with all three failures.
+- Fix (user-ordered port move), a paired contract I own end-to-end:
+  - scripts/force-server-port.cjs: build step pins `.next/standalone/server.js` to `FORCE_PORT || 4000` (start.sh's PORT export deliberately ignored - cosmetic there).
+  - Caddyfile default upstream -> localhost:4000 (XTransformPort dynamic route untouched); build.sh copies both into the deploy package.
+  - scripts/publish.sh + `bun run start` set FORCE_PORT=3000 - the SANDBOX front proxy (:81, platform-owned config) is hardwired to :3000, and task 20 proved that path works.
+  - publish.sh pkill pattern fixed: "standalone/server.js" never matched the real cmdline "bun server.js"; instances could survive a re-publish.
+  - DEPLOY.md section 2 documents FORCE_PORT.
+- Verified: build exit 0 + server.js line 8 = `parseInt(process.env.FORCE_PORT, 10) || 4000`; FC sim (PORT=3000 exported, no FORCE_PORT) -> 200 on :4000, :3000 untouched; publish sim (FORCE_PORT=3000) -> 200 on :3000; test servers killed, ports 3000/4000 clean for the deploy.
+- Dev contract untouched on purpose: dev stays `-p 3000` (dev.sh wait_for_service hardcodes localhost:3000; dev.log 09:24 proves that phase passes). If the deploy still fails after this, the next lever is the platform-side runner, not repo code.

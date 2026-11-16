@@ -30,7 +30,11 @@ bun run build      # next build + copies .next/static and public/ into .next/sta
 bun run start      # NODE_ENV=production bun .next/standalone/server.js
 ```
 
-`PORT` selects the listen port (default 3000). Any Node 18+ runtime
+`FORCE_PORT` selects the listen port (default 4000 — chosen because the
+deploy runtime environment may already hold :3000 with its own agent;
+the repo Caddyfile upstream matches). `scripts/publish.sh` and
+`bun run start` set `FORCE_PORT=3000` for the sandbox front proxy,
+which is hardwired to that port. Any Node 18+ runtime
 or container can run `.next/standalone/server.js` directly — no bun
 requirement at runtime, `bunx next start` also works.
 
