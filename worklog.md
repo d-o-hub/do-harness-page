@@ -460,3 +460,15 @@ User supplied a GitHub PAT in chat and pointed deployment at the new public repo
 - Verification: /, og.png, robots.txt, sitemap.xml, logo.svg, icon.svg, css + js chunks, variant-board.html all 200; unknown path 404s; canonical + Sitemap line carry the subpath. _next assets flapped 404 during the first build's CDN propagation, stable 200 once builds/latest showed "built". Full-page screenshot of the live site: download/pages-cert-desktop.png.
 - Export caveat recorded in DEPLOY.md: star count and install-script checksum are frozen at build time (refresh on next build:pages, not hourly). Platform deploy (standalone) remains independent and untouched.
 - Security note passed to the user: the PAT travelled through chat and should be rotated once the session no longer needs it.
+
+## Task 27 - page validated against do-harness reality; 3 fixes shipped (2026-11-21)
+
+User: "validate https://github.com/d-o-hub/do-harness if changes are needed in the page".
+
+- Checked against live sources: README (484 lines), docs/cli.md, docs/adoption.md, crates.io API, releases API, live install.sh, and every external href on the page.
+- Verified correct (no change): install.sh sha256 d9612f0f... matches the page row; curl|sh / npx / cargo binstall commands and descriptions match README; init "detects the pack, writes the contract, runs a first verification" matches README ("init then runs the generated contract once"); hook install "gates commits and pushes" matches README (pre-commit + pre-push hooks); CI command matches README's canonical invocation exactly; Windows release-zip note, MIT license, adoption-guide/LICENSE/releases links (all 200), hero wording ("feedback sensors" is README's own term), crates.io Rust 1.85.
+- Fixed 1 (exit semantics): the In CI note claimed "exit 2 reports VACUOUS". Docs say otherwise: 2 = usage/config error or every selected sensor unrunnable; a zero-sensor run is VACUOUS, exits 0, and is flagged vacuous in the JSON report ("A zero-sensor exit code of 0 never means the repository was verified" - adoption.md). Note rewritten accordingly.
+- Fixed 2 (Source tab): pinned cargo install --version 0.3.0 --locked replaced with cargo install do-harness --locked (current release 0.4.7 per crates.io; README's primary line; 0.3.0 is only the documented libSQL fix boundary, not the recommendation).
+- Fixed 3 (stars:null frozen): the export build's anonymous GitHub API call hit the IP-shared quota and froze the degraded star row. getStars now sends Authorization: Bearer $GITHUB_TOKEN when that build-time env is set (never inlined into the export; verified rg 'ghp_' out/ clean); the row shows the real count (1) and degrades silently without the token.
+- Shipped: commit 463efed on main, gh-pages redeployed (build with token), live page confirmed updated in ~30s: stars":1, new Source command present, old 0.3.0 pin gone, checksum row unchanged.
+- Repo-side note passed to user (not a page change): the do-harness repo's homepage field is empty and could point at the Pages site; README's pinned installer example references v0.4.8 while releases/latest is v0.4.7.
