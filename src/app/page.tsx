@@ -39,8 +39,17 @@ const jsonLd = {
 
 async function getStars(): Promise<number | null> {
   try {
+    /* The anonymous API quota is shared by IP and exhausts fast on CI and
+       build runners, which would freeze stars:null into the static export.
+       GITHUB_TOKEN (build-time env, never inlined into the exported bundle)
+       lifts the quota when present; the fetch still degrades silently
+       without one. */
+    const token = process.env.GITHUB_TOKEN
     const res = await fetch(REPO_API, {
-      headers: { Accept: 'application/vnd.github+json' },
+      headers: {
+        Accept: 'application/vnd.github+json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
       next: { revalidate: 3600 },
     })
     if (!res.ok) return null

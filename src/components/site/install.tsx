@@ -19,8 +19,8 @@ const METHODS = [
   },
   {
     label: 'Source',
-    desc: 'Build it yourself on a Rust 1.85+ toolchain.',
-    cmd: 'cargo install do-harness --version 0.3.0 --locked',
+    desc: 'Compile the current release on a Rust 1.85+ toolchain.',
+    cmd: 'cargo install do-harness --locked',
   },
 ]
 
@@ -176,8 +176,11 @@ export function Install({
                   <code className="break-words text-foreground">{CI_CMD}</code>
                 </div>
                 <p className="mt-2 text-pretty text-sm leading-relaxed text-muted-foreground">
-                  Exit 0 passes, 1 fails, 2 reports VACUOUS: a workspace with
-                  zero sensors proves nothing. No build step required.
+                  Exit 0 passes, 1 fails, 2 means usage or config error, or
+                  nothing runnable. A run that selects zero sensors exits 0 but
+                  is flagged <code className="text-foreground">vacuous</code> in
+                  the JSON report — it is not verification evidence. No build
+                  step required.
                 </p>
               </div>
             </div>
