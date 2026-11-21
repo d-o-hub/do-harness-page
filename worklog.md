@@ -448,3 +448,15 @@ User retried after the :4000 fix; same "Sorry, there was a problem deploying the
 - Certification evidence of the running app (boot's dev server on :3000, front door :81, gateway-style Host header): download/live-cert-desktop.png (1440px) and download/live-cert-mobile.png (390px) - full page renders, scroll reveals fire, accepted variant 2 CTA (full-width command deck + ink Copy + adoption-guide secondary) in place.
 - Note: next dev (Turbopack) wipes .next/standalone; the FC build regenerates it. agent-browser full-page captures need explicit scrolling first or scroll-reveal sections stay blank.
 - Final state: tree clean at HEAD; app serving 200 on :3000/:81. Remaining moves are platform/user-side: retry button, support deploy logs, or deploy outside the platform per DEPLOY.md (GitHub push needs a remote+credentials the sandbox cannot hold; NEXT_PUBLIC_SITE_URL is the deploy-time variable).
+
+## Task 26 - GitHub Pages deploy is live (user-provided PAT) (2026-11-21)
+
+User supplied a GitHub PAT in chat and pointed deployment at the new public repo d-o-hub/do-harness-page (empty, owned by the d-o-hub account).
+
+- Static export path added without touching the platform contract: next.config.ts switches to output:"export" + basePath /do-harness-page only when PAGES_EXPORT=1, and drops headers() in that mode (Pages cannot set custom headers; standalone remains the default). api/robots/sitemap routes pinned force-static (export requirement, no server-build behavior change). robots.ts sitemap join made subpath-safe - new URL('/sitemap.xml', base) drops the path, relative join keeps /do-harness-page/sitemap.xml.
+- Tooling: scripts/build-pages.sh (env-gated build, NEXT_PUBLIC_SITE_URL defaults to the Pages origin), scripts/deploy-gh-pages.sh (build + force-push out/ as gh-pages, .nojekyll included, out/.git cleaned afterwards), package.json build:pages / deploy:pages, DEPLOY.md section 3.
+- Export build green: 7 routes static; verified in out/ that css/js carry the /do-harness-page/_next prefix and canonical, og:image, twitter:image, jsonLd, robots and sitemap all resolve to the Pages origin.
+- Pushes used x-access-token@ URLs on the command line only - the token never landed in a remote, config or file. main at 813c021, gh-pages at f3b504b. Pages had been pre-enabled by the user (legacy, gh-pages /(root)); first build went live in ~40s.
+- Verification: /, og.png, robots.txt, sitemap.xml, logo.svg, icon.svg, css + js chunks, variant-board.html all 200; unknown path 404s; canonical + Sitemap line carry the subpath. _next assets flapped 404 during the first build's CDN propagation, stable 200 once builds/latest showed "built". Full-page screenshot of the live site: download/pages-cert-desktop.png.
+- Export caveat recorded in DEPLOY.md: star count and install-script checksum are frozen at build time (refresh on next build:pages, not hourly). Platform deploy (standalone) remains independent and untouched.
+- Security note passed to the user: the PAT travelled through chat and should be rotated once the session no longer needs it.
