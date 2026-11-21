@@ -13,10 +13,6 @@ const nextConfig: NextConfig = pagesExport
   ? {
       output: "export",
       basePath: pagesBasePath,
-      /* Assets are served from a "c" subfolder (scripts/deploy-gh-pages.sh
-         mirrors _next there): the CDN holds stale 404 entries for the
-         default /_next/ asset URLs, so the export must not reference them. */
-      assetPrefix: `${pagesBasePath}/c`,
       images: { unoptimized: true },
       reactStrictMode: false,
     }

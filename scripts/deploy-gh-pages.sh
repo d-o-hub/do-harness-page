@@ -9,8 +9,8 @@ REPO="${REPO:-d-o-hub/do-harness-page}"
 
 sh scripts/build-pages.sh
 
-# .nojekyll and the assetPrefix mirror are handled by build-pages.sh,
-# so the out/ tree is ready to commit as-is.
+# .nojekyll is handled by build-pages.sh, so the out/ tree is ready
+# to commit as-is.
 
 cd out
 git init -q
