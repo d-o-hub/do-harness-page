@@ -10,3 +10,13 @@ NEXT_PUBLIC_SITE_URL="${NEXT_PUBLIC_SITE_URL:-https://d-o-hub.github.io/do-harne
 PAGES_EXPORT=1
 export NEXT_PUBLIC_SITE_URL PAGES_EXPORT
 bunx next build
+
+# GitHub Pages must not run Jekyll (it would drop the _next/ tree).
+touch out/.nojekyll
+
+# Mirror the _next tree under the assetPrefix folder (see next.config.ts):
+# the export references <origin>/do-harness-page/c/_next/..., URLs the
+# CDN has never cached, while the original /_next/ copies stay in place
+# for stale cached pages.
+mkdir -p out/c
+cp -a out/_next out/c/_next

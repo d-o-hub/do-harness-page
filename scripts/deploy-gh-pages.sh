@@ -9,8 +9,8 @@ REPO="${REPO:-d-o-hub/do-harness-page}"
 
 sh scripts/build-pages.sh
 
-# GitHub Pages must not run Jekyll (it would drop the _next/ tree).
-touch out/.nojekyll
+# .nojekyll and the assetPrefix mirror are handled by build-pages.sh,
+# so the out/ tree is ready to commit as-is.
 
 cd out
 git init -q
