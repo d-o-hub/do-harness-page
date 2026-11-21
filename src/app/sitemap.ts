@@ -8,6 +8,10 @@ import type { MetadataRoute } from 'next'
 
 const BASE = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
 
+/* GitHub Pages export (output: "export") requires metadata routes to
+   declare themselves static. */
+export const dynamic = 'force-static'
+
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {

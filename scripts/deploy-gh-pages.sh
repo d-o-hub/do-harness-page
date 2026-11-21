@@ -1,0 +1,31 @@
+#!/bin/sh
+# Build the static export and force-publish it to the gh-pages branch
+# of the Pages repo. Push access comes from GITHUB_TOKEN (a PAT with
+# repo scope) or from already-working git credentials; without either
+# the final push fails with 403. One-time repo setup (not done here):
+# Settings -> Pages -> Source: "Deploy from a branch", gh-pages /root.
+set -eu
+REPO="${REPO:-d-o-hub/do-harness-page}"
+
+sh scripts/build-pages.sh
+
+# GitHub Pages must not run Jekyll (it would drop the _next/ tree).
+touch out/.nojekyll
+
+cd out
+git init -q
+git checkout -q -b gh-pages
+git add -A
+git commit -qm "pages deploy: $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+
+if [ -n "${GITHUB_TOKEN:-}" ]; then
+  git push -qf "https://x-access-token:${GITHUB_TOKEN}@github.com/${REPO}.git" gh-pages:gh-pages
+else
+  git push -qf "https://github.com/${REPO}.git" gh-pages:gh-pages
+fi
+cd ..
+rm -rf out/.git
+
+OWNER=${REPO%%/*}
+NAME=${REPO#*/}
+echo "gh-pages published -> https://${OWNER}.github.io/${NAME}/"
