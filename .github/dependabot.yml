@@ -1,0 +1,9 @@
+# Dependabot: the project is managed by Bun (bun.lock, no other lockfile).
+# The default npm_and_yarn ecosystem cannot update bun.lock and aborts with
+# "Bun is misconfigured" - ecosystem "bun" is required for this directory.
+version: 2
+updates:
+  - package-ecosystem: "bun"
+    directory: "/"
+    schedule:
+      interval: "weekly"

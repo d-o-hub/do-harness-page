@@ -19,6 +19,9 @@ const eslintConfig = [...nextCoreWebVitals, ...nextTypescript, {
     // React rules
     "react-hooks/exhaustive-deps": "off",
     "react-hooks/purity": "off",
+    // shadcn/ui scaffold hooks (use-mobile, carousel) sync state in effects
+    // by design; the newer plugin flags the pattern.
+    "react-hooks/set-state-in-effect": "off",
     "react/no-unescaped-entities": "off",
     "react/display-name": "off",
     "react/prop-types": "off",
