@@ -17,6 +17,7 @@ export const metadata: Metadata = {
 
 const REPO_API = 'https://api.github.com/repos/d-o-hub/do-harness'
 const REPO_URL = 'https://github.com/d-o-hub/do-harness'
+const RELEASES_API = 'https://api.github.com/repos/d-o-hub/do-harness/releases/latest'
 const INSTALL_SCRIPT_URL =
   'https://raw.githubusercontent.com/d-o-hub/do-harness/main/scripts/install.sh'
 
@@ -63,6 +64,36 @@ async function getStars(): Promise<number | null> {
 }
 
 /**
+ * Tag of the latest published do-harness release (v<digits>.<digits>.<digits>).
+ * Same source, token lift, and 1h revalidate as the star count. null on any
+ * failure: the Source install method degrades to the versionless "current
+ * release" wording instead of a stale or invented tag. The rendered
+ * data-release-version attribute is the state the upstream-release workflow
+ * compares against, so a build that could not resolve the tag reads as a
+ * page that lags the release and gets redeployed.
+ */
+async function getLatestRelease(): Promise<string | null> {
+  try {
+    const token = process.env.GITHUB_TOKEN
+    const res = await fetch(RELEASES_API, {
+      headers: {
+        Accept: 'application/vnd.github+json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      next: { revalidate: 3600 },
+    })
+    if (!res.ok) return null
+    const data = (await res.json()) as { tag_name?: unknown }
+    return typeof data.tag_name === 'string' &&
+      /^v\d+\.\d+\.\d+$/.test(data.tag_name)
+      ? data.tag_name
+      : null
+  } catch {
+    return null
+  }
+}
+
+/**
  * SHA-256 of the exact bytes raw.githubusercontent serves for install.sh,
  * the content `curl | sh` executes. Same source as the pipe, same 1h
  * revalidate as the star count. fetchedAt (HH:MM UTC) records when the
@@ -92,16 +123,21 @@ async function getInstallScriptChecksum(): Promise<{
 }
 
 export default async function Home() {
-  const [stars, scriptChecksum] = await Promise.all([
+  const [stars, scriptChecksum, latestVersion] = await Promise.all([
     getStars(),
     getInstallScriptChecksum(),
+    getLatestRelease(),
   ])
+  const structuredData = {
+    ...jsonLd,
+    ...(latestVersion ? { softwareVersion: latestVersion.slice(1) } : {}),
+  }
 
   return (
     <div id="top" className="flex min-h-svh flex-col">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <a
         href="#main"
@@ -116,7 +152,7 @@ export default async function Home() {
         <Thesis />
         <HowItWorks />
         <Bento />
-        <Install scriptChecksum={scriptChecksum} />
+        <Install scriptChecksum={scriptChecksum} latestVersion={latestVersion} />
         <Compliance />
         <Cta />
       </main>
