@@ -84,7 +84,7 @@ function TerminalLine({ text, tone }: { text: string; tone: Tone }) {
   }
   if (tone === 'halt') {
     return (
-      <p className="w-fit rounded-sm bg-destructive/10 px-1.5 text-destructive">
+      <p className="w-fit rounded-sm bg-destructive/10 px-1.5 text-destructive-ink">
         {text}
       </p>
     )

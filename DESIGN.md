@@ -41,6 +41,7 @@ to the signal green; pure gray would look dead on this palette.
 | `--muted` / `--muted-foreground` | `oklch(0.958 0.007 140)` / `oklch(0.43 0.016 152)` | `oklch(0.245 0.012 155)` / `oklch(0.72 0.014 150)` | Quiet fills / secondary text |
 | `--accent` / `--accent-foreground` | same as secondary | same as secondary | Hover washes |
 | `--destructive` | `oklch(0.577 0.245 27.325)` | `oklch(0.704 0.191 22.216)` | Failure states only |
+| `--destructive-ink` | `oklch(0.52 0.19 27.325)` | same as `--destructive` | Destructive text on `bg-destructive/10` (4.88:1 on the tint; AA) |
 | `--border` / `--input` | `oklch(0.905 0.01 145)` | `oklch(0.3 0.012 152)` | Hairlines / input edges |
 | `--ring` | `oklch(0.53 0.115 152)` | `oklch(0.72 0.13 152)` | Focus ring color |
 | `--signal` | `oklch(0.53 0.115 152)` | `oklch(0.72 0.13 152)` | The one accent |
@@ -55,7 +56,11 @@ to the signal green; pure gray would look dead on this palette.
   pass marks, the focus ring, selection background, the loop-back
   connector in diagrams, active stage highlights.
 - `--destructive` appears only for failure states: exit 1, ✗ marks,
-  halt strips, the 404 chip.
+  halt strips, the 404 chip. Destructive **text** on a
+  `bg-destructive/10` surface uses `--destructive-ink` instead: the
+  base token on its own tint falls below 4.5:1 in light theme.
+  On plain card or paper backgrounds `--destructive` still passes
+  (4.8:1) and stays the right choice for ✗ marks and exit 1.
 - `--primary` is ink, not green. The primary button is black on paper
   (paper on dark), which keeps green exclusive to verdicts.
 
@@ -81,6 +86,7 @@ glyph set).
 | Lead / body | `text-lg`, `leading-relaxed` | default | `text-muted-foreground` for prose |
 | Kicker | mono `text-[12px]`, `uppercase` | `0.14em` | Labels diagrams only, max two per region |
 | Mini kicker | mono `text-[11px]`, `uppercase` | `0.14em` | Cell-level labels inside diagram panels (11px is the legibility floor) |
+| Mono annotation | mono `text-[12px]`, `leading-relaxed` | default | Multi-line notes that read as prose, e.g. the how-it-works "enforced at" footer |
 | Mono data | mono `text-[13px]` | default | Terminal lines, cmd rows |
 | Flow label | mono `text-[11px]` | `0.01em` | `.flow-label`, masks the line it interrupts |
 

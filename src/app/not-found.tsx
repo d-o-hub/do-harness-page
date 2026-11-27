@@ -10,7 +10,7 @@ export default function NotFound() {
     <main className="flex min-h-svh items-center justify-center px-5 py-20">
       <div className="w-full max-w-[560px] rounded-xl border border-border bg-card p-8 shadow-sm md:p-10">
         <div className="flex items-center gap-3">
-          <span className="rounded-full border border-destructive/30 bg-destructive/10 px-2.5 py-0.5 font-mono text-[12px] font-medium tracking-wide text-destructive">
+          <span className="rounded-full border border-destructive/30 bg-destructive/10 px-2.5 py-0.5 font-mono text-[12px] font-medium tracking-wide text-destructive-ink">
             exit 1
           </span>
           <span className="font-mono text-[12px] font-medium uppercase tracking-[0.14em] text-muted-foreground">

@@ -220,7 +220,7 @@ function StageCard({
 }
 
 const ENFORCED_AT = (
-  <div className="mt-5 border-t border-border pt-4 font-mono text-[11px] leading-relaxed text-muted-foreground">
+  <div className="mt-5 border-t border-border pt-4 font-mono text-[12px] leading-relaxed text-muted-foreground">
     enforced at <span className="text-foreground">pre-commit</span> ·{' '}
     <span className="text-foreground">commit-msg</span> ·{' '}
     <span className="text-foreground">pre-push</span> ·{' '}
