@@ -2,10 +2,12 @@ name: Deploy Pages
 
 # Publishes the static export through the Actions Pages pipeline
 # (atomic artifact deployment) instead of the legacy gh-pages branch
-# builder. Runs on every push; only the default branch may publish,
-# PR branches stop before the deploy step.
+# builder. Runs only on pushes to the default branch (PRs are covered
+# by ci.yml); workflow_dispatch allows a manual redeploy.
 on:
   push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -25,7 +27,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: oven-sh/setup-bun@v2
         with:

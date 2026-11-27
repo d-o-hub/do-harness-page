@@ -179,7 +179,7 @@ export function Install({
                   Exit 0 passes, 1 fails, 2 means usage or config error, or
                   nothing runnable. A run that selects zero sensors exits 0 but
                   is flagged <code className="text-foreground">vacuous</code> in
-                  the JSON report — it is not verification evidence. No build
+                  the JSON report, it is not verification evidence. No build
                   step required.
                 </p>
               </div>

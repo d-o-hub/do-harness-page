@@ -8,8 +8,8 @@ harness — hold the repo to the standard it sells.
 
 The single-page marketing site for
 [github.com/d-o-hub/do-harness](https://github.com/d-o-hub/do-harness):
-Next.js 16 (App Router, Turbopack, standalone output), Tailwind v4,
-framer-motion. One page, ten sections, no CMS, no database, no
+Next.js 16 (App Router, Turbopack, standalone output) and Tailwind
+v4. One page, ten sections, no CMS, no database, no
 server state beyond a cached GitHub star fetch.
 
 ## Commands
@@ -48,8 +48,9 @@ server state beyond a cached GitHub star fetch.
   code-first; design comps are not generated). `.impeccable/live/` is
   gitignored machine-local state.
 - `.github/workflows/ci.yml` — CI on push/PR runs the same three
-  gates as the definition of done: lint, tsc, build. Keep it in sync
-  when a gate changes.
+  gates as the definition of done, with the static export
+  (`bun run build:pages`) in place of the standalone build. Keep it
+  in sync when a gate changes.
 - `.agents/skills/impeccable/` — external design skill pack
   (impeccable v4.8.0): 24 design commands plus a 62-rule slop
   detector. Copilot integration lives in `.github/` (agents, hooks,

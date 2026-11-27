@@ -69,7 +69,7 @@ JetBrains Mono from Google Fonts.
    ```sh
    agent-browser set viewport 1200 630
    agent-browser open "$(pwd)/scripts/og.html"
-   agent-browser screenshot /home/z/my-project/public/og.png
+   agent-browser screenshot "$(pwd)/public/og.png"
    ```
 3. Verify: PNG is exactly 1200×630 (`file public/og.png`), no wrapped
    chips (all chips are `white-space: nowrap` for a reason), text
