@@ -24,6 +24,8 @@ const METHODS = [
   },
 ]
 
+const REPO_URL = 'https://github.com/d-o-hub/do-harness'
+
 const WIRE_STEPS = [
   {
     cmd: 'do-harness init',
@@ -44,10 +46,12 @@ const CI_CMD =
 
 export function Install({
   scriptChecksum,
+  latestVersion,
 }: {
   scriptChecksum:
     | { hash: string; fetchedAt: string }
     | null
+  latestVersion: string | null
 }) {
   return (
     <section
@@ -86,7 +90,23 @@ export function Install({
                     <div className="flex flex-col gap-0.5 md:flex-row md:items-baseline md:justify-between md:gap-6">
                       <h3 className="text-[15px] font-medium">{m.label}</h3>
                       <p className="text-pretty text-sm text-muted-foreground">
-                        {m.desc}
+                        {m.label === 'Source' && latestVersion ? (
+                          <>
+                            Compile{' '}
+                            <a
+                              href={`${REPO_URL}/releases/tag/${latestVersion}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              data-release-version={latestVersion}
+                              className="font-medium text-foreground underline decoration-border underline-offset-4 hover:decoration-foreground"
+                            >
+                              {latestVersion}
+                            </a>{' '}
+                            on a Rust 1.85+ toolchain.
+                          </>
+                        ) : (
+                          m.desc
+                        )}
                       </p>
                     </div>
                     <div

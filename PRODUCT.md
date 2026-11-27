@@ -62,8 +62,10 @@ green.
 
 ## Evidence on Hand
 
-- Public repo: https://github.com/d-o-hub/do-harness (star count fetched live
-  by the page, 1h revalidate).
+- Public repo: https://github.com/d-o-hub/do-harness (star count and latest
+  release tag fetched live by the page, 1h revalidate; a scheduled
+  upstream-release workflow redeploys when the published page lags the newest
+  tag).
 - Dogfooded CI on the repo itself.
 - Compliance mappings and adoption quickstarts as upstream repo docs.
 

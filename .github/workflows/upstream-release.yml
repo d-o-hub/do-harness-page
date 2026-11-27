@@ -1,0 +1,151 @@
+name: upstream-release
+
+# Keeps the published page in lockstep with do-harness releases, the page-side
+# mirror of the upstream auto-release train:
+#
+#   upstream release published -> track: resolve the latest do-harness release
+#                     tag, compare it against the deployed page itself, and
+#                     redeploy through deploy-pages.yml when the page lags.
+#
+# The deployed page is the state store. The static export renders the resolved
+# release tag as `data-release-version="<tag>"` on the Source install method,
+# so "does the page serve the latest release?" is a check against the artifact,
+# not a chat claim — the same proof-over-claims rule the page itself states.
+# No extra credential or variable is needed, and a page build that could not
+# resolve the tag (API quota exhausted) renders without the marker, reads as a
+# lagging page, and gets redeployed rather than silently passing.
+#
+# Why a dispatch and not a direct build here: deploy-pages.yml owns the Pages
+# permissions, the environment, and the artifact pipeline; a redeploy is its
+# `workflow_dispatch`, which is the one event that always creates a run when
+# sent with GITHUB_TOKEN
+# (https://docs.github.com/en/actions/how-tos/writing-workflows/choosing-when-your-workflow-runs/triggering-a-workflow).
+# This workflow then watches that run to an exit code, so its own conclusion is
+# the verdict: green means the deployed page carries the latest release.
+#
+# The schedule is every 6 hours because the page's build-time data is revalidated
+# hourly at build; release cadence upstream is far slower, and a stale page for
+# at most one cycle is the trade for not running deployments around the clock.
+# A manual `workflow_dispatch` with `force` skips the comparison and rebuilds —
+# the hand lever for "redeploy regardless of what the page shows".
+
+on:
+  schedule:
+    # Every 6 hours, off the quarter-hour so it does not queue behind
+    # on-the-hour cron fleets.
+    - cron: "17 */6 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Redeploy without comparing the deployed page"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  # One comparison-and-deploy at a time: a deploy dispatched while another is
+  # still being watched would race the same artifact pipeline.
+  group: upstream-release
+  cancel-in-progress: false
+
+env:
+  # The Pages origin the static export is published to (build-pages.sh
+  # default). Override with a repository variable if the site moves.
+  PAGE_URL: ${{ vars.PAGE_URL || 'https://d-o-hub.github.io/do-harness-page/' }}
+  UPSTREAM_REPO: d-o-hub/do-harness
+
+jobs:
+  track:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      # `contents` reads nothing here; `actions` is the deploy-pages.yml
+      # dispatch and the run watch that follows it.
+      actions: write
+    steps:
+      - name: Resolve the latest upstream release tag
+        id: upstream
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          # `releases/latest` is the newest non-draft, non-prerelease release:
+          # exactly what "the latest do-harness version" means for the page.
+          # A failure here fails the step instead of comparing against a guess.
+          tag="$(gh api "repos/$UPSTREAM_REPO/releases/latest" --jq .tag_name)"
+          test -n "$tag"
+          printf 'upstream release: %s\n' "$tag"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: Compare the deployed page against the upstream tag
+        id: decide
+        env:
+          GH_TOKEN: ${{ github.token }}
+          FORCE: ${{ inputs.force || 'false' }}
+          EXPECTED: ${{ steps.upstream.outputs.tag }}
+        run: |
+          set -euo pipefail
+          if [ "$FORCE" = "true" ]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+            echo "force redeploy requested; skipping the comparison"
+            exit 0
+          fi
+          html="$(curl -fsSL --max-time 30 "$PAGE_URL")"
+          # The export renders the marker server-side only when the build
+          # resolved the tag; a quota-exhausted build omits it and reads as
+          # lagging, which is the fail-closed direction.
+          if printf '%s' "$html" | grep -qF "data-release-version=\"$EXPECTED\""; then
+            echo "deploy=false" >> "$GITHUB_OUTPUT"
+            printf 'the deployed page already serves %s\n' "$EXPECTED"
+          else
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+            printf 'the deployed page lags the release: expected marker %s\n' \
+              "data-release-version=\"$EXPECTED\""
+          fi
+
+      - name: Redeploy the page through deploy-pages.yml
+        if: steps.decide.outputs.deploy == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          before="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          gh workflow run deploy-pages.yml --ref main
+          # The dispatched run registers asynchronously; poll briefly before
+          # giving up, because "dispatched but never started" must not read
+          # as green.
+          run_id=""
+          for _ in $(seq 1 12); do
+            sleep 5
+            run_id="$(gh run list --workflow deploy-pages.yml \
+              --created "=>$before" --limit 1 \
+              --json databaseId --jq 'first(.[]).databaseId // empty')"
+            test -n "$run_id" && break
+          done
+          test -n "$run_id" || {
+            echo "deploy-pages run did not register within 60s of the dispatch" >&2
+            exit 1
+          }
+          printf 'watching deploy-pages run %s\n' "$run_id"
+          # Bounded by the job timeout; the deploy itself is a static export,
+          # so a normal run finishes in minutes.
+          gh run watch "$run_id" --exit-status --interval 15
+
+      - name: Summarize
+        env:
+          EXPECTED: ${{ steps.upstream.outputs.tag }}
+          DEPLOYED: ${{ steps.decide.outputs.deploy }}
+          PAGE_URL: ${{ env.PAGE_URL }}
+        run: |
+          {
+            printf '## upstream-release\n\n'
+            printf '| | |\n|---|---|\n'
+            printf '| latest do-harness release | `%s` |\n' "$EXPECTED"
+            if [ "$DEPLOYED" = "true" ]; then
+              printf '| action | redeployed `%s` |\n' "$PAGE_URL"
+            else
+              printf '| action | none; page already current |\n'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
