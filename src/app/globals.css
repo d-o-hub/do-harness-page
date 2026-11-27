@@ -320,7 +320,7 @@
      transform (compositor-only); the visible dot is its ::after. The
      wrapper is sized to track minus one dot diameter, so translating
      the wrapper by 100% of its own width reproduces the old
-     left: calc(100% - 8px) endpoint exactly — no layout properties
+     left: calc(100% - 8px) endpoint exactly, no layout properties
      animate. */
   .flow-dot {
     position: absolute;

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-/* SSR-safe prefers-reduced-motion flag — the last replacement for
+/* SSR-safe prefers-reduced-motion flag, the last replacement for
    framer-motion's useReducedMotion after the de-framer pass.
 
    The lazy initializer reads the live media query on the client's very

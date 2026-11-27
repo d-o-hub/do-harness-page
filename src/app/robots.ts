@@ -3,7 +3,7 @@ import type { MetadataRoute } from 'next'
 /* Generated robots.txt. The explicit social-crawler entries carry
    over from the previous static file; the Sitemap line resolves
    against NEXT_PUBLIC_SITE_URL (localhost fallback in dev). The URL
-   is joined as a relative path so subpath origins keep the path —
+   is joined as a relative path so subpath origins keep the path,
    new URL('/sitemap.xml', base) would drop it (GitHub Pages serves
    from /<repo>/, so the joined form is the safe one). */
 

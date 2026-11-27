@@ -63,7 +63,7 @@ async function getStars(): Promise<number | null> {
 }
 
 /**
- * SHA-256 of the exact bytes raw.githubusercontent serves for install.sh —
+ * SHA-256 of the exact bytes raw.githubusercontent serves for install.sh,
  * the content `curl | sh` executes. Same source as the pipe, same 1h
  * revalidate as the star count. fetchedAt (HH:MM UTC) records when the
  * bytes were hashed, so the row can show the stamp beside the hex. null on

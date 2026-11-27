@@ -14,11 +14,11 @@ const nextConfig: NextConfig = pagesExport
       output: "export",
       basePath: pagesBasePath,
       images: { unoptimized: true },
-      reactStrictMode: false,
+      reactStrictMode: true,
     }
   : {
       output: "standalone",
-      reactStrictMode: false,
+      reactStrictMode: true,
       async headers() {
         return [
           {
