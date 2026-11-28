@@ -1,4 +1,9 @@
 #!/bin/sh
+# DEPRECATED: superseded by .github/workflows/deploy-pages.yml, which
+# publishes the static export through the Actions Pages artifact pipeline
+# on every push to main. This script is the legacy branch-based path
+# (gh-pages branch + "Deploy from a branch" Pages source) and is kept only
+# for history; running it would fight the Actions-published deployment.
 # Build the static export and force-publish it to the gh-pages branch
 # of the Pages repo. Push access comes from GITHUB_TOKEN (a PAT with
 # repo scope) or from already-working git credentials; without either
