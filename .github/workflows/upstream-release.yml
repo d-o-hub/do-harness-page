@@ -139,6 +139,7 @@ jobs:
           DEPLOYED: ${{ steps.decide.outputs.deploy }}
           PAGE_URL: ${{ env.PAGE_URL }}
         run: |
+          # shellcheck disable=SC2016  # single-quoted printf format strings are intentional
           {
             printf '## upstream-release\n\n'
             printf '| | |\n|---|---|\n'
