@@ -47,10 +47,12 @@ server state beyond a cached GitHub star fetch.
   init: `"buildPath": "code"` (landing/showcase surfaces build
   code-first; design comps are not generated). `.impeccable/live/` is
   gitignored machine-local state.
-- `.github/workflows/ci.yml` — CI on push/PR runs the same three
-  gates as the definition of done, with the static export
-  (`bun run build:pages`) in place of the standalone build. Keep it
-  in sync when a gate changes.
+- `.github/workflows/ci.yml` — CI on push/PR runs the definition-of-done
+  gates (lint, typecheck) plus the static export
+  (`bun run build:pages`), an actionlint check on the workflow YAMLs,
+  and `bun test` over `tests/export.test.ts`, which smoke-checks the
+  exported artifact in `out/` (basePath URLs, robots/sitemap, branded
+  404, release marker format). Keep it in sync when a gate changes.
 - `.agents/skills/impeccable/` — external design skill pack
   (impeccable v4.8.0): 24 design commands plus a 62-rule slop
   detector. Copilot integration lives in `.github/` (agents, hooks,

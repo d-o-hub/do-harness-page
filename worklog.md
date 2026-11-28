@@ -536,3 +536,22 @@ Work Log:
 - Verified: bun run lint exit 0 (zero warnings); bunx tsc --noEmit exit 0; bun run build:pages exit 0; impeccable detect on the rebuilt out/index.html drops the low-contrast advisory (was 3.9:1 finding) and the tiny-text advisory; text-destructive-ink present in out/index.html and out/404.html. Browser sweep not run: agent-browser unavailable and outbound HTTP blocked in the sandbox; light/dark visual confirmation of the two changed spots still owed at deploy time (per hard rule 8).
 
 Stage Summary: destructive text on its own tint now passes WCAG AA in both themes via a new --destructive-ink token (light darkened, dark aliased); the 11px prose annotation is 12px; DESIGN.md is the source of truth for both changes. Gates green, detector contrast finding cleared, PR open for review.
+
+## Task 33 - CI hardening: export smoke tests, actionlint, LICENSE, SECURITY.md, PR template (2026-11-28)
+
+Agent: Vibe Code (Z.ai)
+Task: "analyze for improvements, new features, coding workflow, release management" then "proceed" - ship the top items from the audit: CI gaps (no tests, no YAML lint), repo hygiene (no LICENSE, no SECURITY.md, no PR template), and the superseded legacy deploy script.
+
+Work Log:
+- Audit findings that drove this task: no test framework at all (QA lived in sandbox-only scripts/verify-N.sh and qa-prod.sh, none in CI); no YAML lint despite the documented worklog Task 29 workflow-YAML mangling incident; main branch unprotected (verified via API; sandbox could not mutate it, see below); no LICENSE (licenseInfo null), issues disabled, no SECURITY.md, no PR template; scripts/deploy-gh-pages.sh is a legacy branch-based deploy that diverges from the Actions artifact pipeline.
+- tests/export.test.ts: zero-dependency `bun test` smoke suite over the static export (out/), 6 checks: index.html branded + basePath-pinned asset hrefs (/do-harness-page/_next/), no localhost URLs leaking into the export, data-release-version marker format (absence allowed, fail-closed upstream contract respected, presence must be a v-prefixed tag), robots.txt Sitemap line, sitemap.xml canonical loc, branded 404.html. bun-types wired via a triple-slash reference because next build's typecheck includes tests/ and bun:test resolves only with bun-types in scope.
+- ci.yml: added workflow_dispatch (manual runs), a pinned actionlint step (v1.7.7 download script, binary removed after run) guarding both workflow YAMLs, and `bun test` after build:pages. Push trigger to main kept: branch protection could not be applied from this sandbox (API mutation blocked), so direct pushes to main remain possible and must stay verified.
+- deploy-pages.yml: deploy job now carries timeout-minutes: 20 (the upstream-release track job already had 30).
+- scripts/deploy-gh-pages.sh: DEPRECATED header added; the Actions Pages pipeline is the only deploy path. Script kept for worklog history per the Task 31 evidence decision.
+- LICENSE: MIT, matching upstream d-o-hub/do-harness (verified via API: mit).
+- SECURITY.md: scopes the policy to this static site and routes reports to the upstream do-harness advisory channel and its SLA/severity rubric; lists the three classes that matter for a static export (build-time data injection, supply chain, metadata origin misuse).
+- .github/PULL_REQUEST_TEMPLATE.md: checklist mirrors the definition of done plus the new test gate and the DESIGN.md/worklog sync rules.
+- Branch protection on main (require PRs + CI check) could NOT be applied: the sandbox blocks mutating GitHub settings API calls. Manual step for the repo owner: Settings > Branches > Add rule for main, require the "lint, typecheck, build pages" check.
+- Verified: bun install --frozen-lockfile clean; bun run lint exit 0 (zero warnings); bunx tsc --noEmit exit 0; bun run build:pages exit 0; bun test 6 pass / 0 fail.
+
+Stage Summary: CI now verifies the exported artifact itself (the thing Pages serves) with a zero-dependency bun test suite, workflow YAML is actionlint-guarded against the Task 29 failure class, the deploy job is bounded by a timeout, the repo carries MIT + SECURITY.md + a PR template, and the only remaining manual item is enabling branch protection on main.
